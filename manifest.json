@@ -1,0 +1,15 @@
+{
+  "name": "Meet Scheduler",
+  "version": "0.1",
+  "description": "An extension to start meetings automatically",
+  "manifest_version": 3,
+  "permissions": ["storage", "alarms"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Schedule meets",
+    "default_popup": "popup/popup.html"
+  },
+  "options_page": "options_page/options_page.html"
+}

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meet Scheduler</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="./options.css">
+  <style>
+    header,
+    main,
+    footer {
+      padding-left: 300px;
+    }
+
+    @media only screen and (max-width : 992px) {
+
+      header,
+      main,
+      footer {
+        padding-left: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <div class="nav-wrapper teal">
+        <a href="#" class="brand-logo">Meet Scheduler</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="sass.html">Sass</a></li>
+          <li><a href="badges.html">Components</a></li>
+          <li><a href="collapsible.html">JavaScript</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+</body>
+<ul id="slide-out" class="sidenav sidenav-fixed">
+  <li>
+    <div class="user-view">
+      <div class="background">
+        <img src="desk.jpg">
+      </div>
+
+      <a href="#name"><span class="white-text name">Meet Scheduler</span></a>
+      <a href="#email"><span class="white-text email">Opens meets automatically</span></a>
+    </div>
+  </li>
+  <li class="side_tab active" data-tab="about"><a href="#!" class="waves-effect"><i
+        class="material-icons teal-text">info</i>About</a></li>
+  <li class="side_tab" data-tab="schedule"><a href="#!" class="waves-effect">Second Link</a></li>
+  <li>
+    <div class="divider"></div>
+  </li>
+  <li><a class="subheader">Subheader</a></li>
+  <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+</ul>
+<main>
+  <section id="about" class="tab-content">
+    About section
+  </section>
+  <section id="schedule" class="tab-content">
+    <div class="loader-wrapper" id="schedule-loader">
+      <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div>
+          <div class="gap-patch">
+            <div class="circle"></div>
+          </div>
+          <div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+
+        <div class="spinner-layer spinner-red">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div>
+          <div class="gap-patch">
+            <div class="circle"></div>
+          </div>
+          <div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+
+        <div class="spinner-layer spinner-yellow">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div>
+          <div class="gap-patch">
+            <div class="circle"></div>
+          </div>
+          <div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+
+        <div class="spinner-layer spinner-green">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div>
+          <div class="gap-patch">
+            <div class="circle"></div>
+          </div>
+          <div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="fixed-action-btn">
+  <a class="btn-floating btn-large modal-trigger" href="#create-subject-modal">
+    <i class="large material-icons">add</i>
+  </a>
+</div>
+
+
+
+<!-- New Subject Modal-->
+<div id="create-subject-modal" class="modal modal-fixed-footer-custom">
+  <div class="progress progress-hidden" id="create-progress">
+    <div class="indeterminate"></div>
+  </div>
+  <div class="modal-content">
+    <h4>Create a new Subject</h4>
+    <div class="form">
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="subject_name" type="text" class="validate">
+          <label for="subject_name">Subject Name</label>
+          <span class="helper-text" data-error="Subject already exists">Subject names must be unique</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="meet_url" type="text" class="validate" placeholder="abc-defg-hij or https://your_meeting.xyz/code">
+          <label for="meet_url">Meeting URL</label>
+          <span class="helper-text" data-error="Invalid format">Full URL or Google Meet code</span>
+        </div>
+      </div>
+      <h5>Choose Days</h5>
+      <div class="row row-tabs">
+        <div class="col s12">
+          <ul class="tabs">
+            <li class="tab col s6"><a class="active" href="#test1">Repeat</a></li>
+            <li class="tab col s6"><a href="#test2">Custom</a></li>
+          </ul>
+        </div>
+        <div id="test1" class="col s12">
+          <div class="days">
+            <div class="day-chip">Mon</div>
+            <div class="day-chip">Tue</div>
+            <div class="day-chip">Wed</div>
+            <div class="day-chip">Thu</div>
+            <div class="day-chip">Fri</div>
+            <div class="day-chip">Sat</div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <input id="repeat-time" type="text" class="timepicker">
+              <label for="repeat-time">Choose Time</label>
+            </div>
+          </div>
+        </div>
+        <div id="test2" class="col s12">Test 2</div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+
+    <button href="#!" id="create_subject_button" class="waves-effect waves-green btn-flat teal-text">Create</button>
+    <a href="#!" class="modal-close waves-effect waves-red red-text btn-flat">Cancel</a>
+  </div>
+</div>
+
+
+<!-- Compiled and minified JavaScript -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
+<script src="../materialize.min.js"></script>
+<script src="./create_alarm.js"></script>
+<script src="./options.js"></script>
+<script src="./list.js"></script>
+<script id="blockOfStuff" type="text/html">
+  <div class="card blue-grey darken-1">
+    <div class="card-content white-text">
+      <span class="card-title">{Title}</span>
+      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quia maiores, voluptatum accusamus corrupti nam minus qui saepe! Sit nobis magnam maiores consequatur blanditiis at repellat eveniet veniam? Tempora, nulla eveniet.</p>
+    </div>
+    <div class="card-action">
+      <a href="#">Edit</a>
+      <a href="#">Delete</a>
+    </div>
+  </div>
+</script>
+</body>
+
+</html>

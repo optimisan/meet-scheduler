@@ -1,0 +1,111 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box !important;
+}
+body {
+  font-size: 100%;
+}
+nav .brand-logo {
+  margin-left: 15px;
+}
+.tab {
+  transition: 0.4s !important;
+}
+
+.modal .modal-content .row-tabs .tabs {
+  background-color: transparent;
+  border-bottom: 1px solid lightgray;
+}
+/* .modal .modal-content {
+  padding: 20px 0 0 0;
+}
+.modal .modal-content h4,
+.modal .modal-content .form > * {
+  padding: 0 24px;
+}
+.modal .modal-content .row-tabs,
+.modal .modal-content .row-tabs .col {
+  padding: 0;
+} */
+.tab-content {
+  display: none;
+}
+.tab-active {
+  display: block;
+}
+.days {
+  display: flex;
+  justify-content: space-around;
+}
+.day-chip {
+  display: inline-block;
+  background-color: lightgray;
+  /* height: 32px; */
+  padding: 5px 13px;
+  margin: 10px;
+  border-radius: 24px;
+  transition: 0.4s;
+  user-select: none;
+}
+.day-chip:hover {
+  background-color: black;
+  cursor: pointer;
+  color: white;
+}
+.day-chip[data-selected="true"] {
+  cursor: pointer;
+  background-color: rgb(172, 37, 154);
+  color: white;
+}
+.modal.modal-fixed-footer-custom
+  .modal-content:not(.timepicker-modal .modal-content) {
+  position: absolute;
+  height: calc(100% - 56px);
+  max-height: 100%;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+}
+.modal.modal-fixed-footer-custom {
+  padding: 0;
+  height: 70%;
+}
+.modal.modal-fixed-footer-custom .modal-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  position: absolute;
+  bottom: 0;
+}
+/* .timepicker-modal {
+  width: 90% !important;
+} */
+.progress-hidden {
+  display: none;
+}
+nav {
+  background-color: transparent;
+  backdrop-filter: blur(5px);
+}
+nav .brand-logo {
+  color: teal !important;
+}
+nav ul li a {
+  color: pink !important;
+}
+nav div.nav-wrapper {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+}
+section#schedule {
+  position: relative;
+}
+.loader-wrapper {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+.card {
+  max-width: 370px;
+  margin: 20px;
+}
