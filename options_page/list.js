@@ -34,9 +34,14 @@ String.prototype.dayFromIndex = function () {
   }
 };
 function displaySubjects(subjects) {
-  const screen = document.getElementById("schedule");
+  const screen = document.getElementById("schedule-cards");
+  if (Object.keys(subjects).length === 0) {
+    screen.innerHTML =
+      '<p class="flow-text">You have no meetings yet. Click the "+" icon to add one</p>';
+  }
   // screen.innerHTML = "Done";
   for (const subjectName in subjects) {
+    console.log(subjects[subjectName]);
     const subject = subjects[subjectName];
     let renderedDays = "";
     for (const day in subject.daysWithTimes) {
@@ -47,14 +52,26 @@ function displaySubjects(subjects) {
       }
     }
     const card = `
-<div class="card blue-grey darken-1">
-  <div class="card-content white-text">
-    <span class="card-title">${subjectName}</span>
-    <div class='days'>${renderedDays}</div>
+<div class="timeline-item">
+  <div class="timeline-icon">
+    <i class="material-icons">check</i>
   </div>
-  <div class="card-action">
-    <a href="#">Edit</a>
-    <a href="#">Delete</a>
+  <div class="timeline-content">
+    <div class="card blue">
+      <div class="card-content">
+        <span class="card-title">${subjectName}</span>
+        <div class='days-display'>${renderedDays}</div>
+        <a href="#!" class="activator">Times</a>
+      </div>
+      <div class="card-reveal">
+      <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
+      <p>Here is some more information about this product that is only revealed once clicked on.</p>
+    </div>
+      <div class="card-action">
+        <a href="#">Edit</a>
+        <a href="#">Delete</a>
+      </div>
+    </div>
   </div>
 </div>
     `;
@@ -62,3 +79,5 @@ function displaySubjects(subjects) {
   }
   document.getElementById("schedule-loader").style.display = "none";
 }
+
+function editing(subjectName) {}

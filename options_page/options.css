@@ -76,9 +76,9 @@ nav .brand-logo {
   position: absolute;
   bottom: 0;
 }
-/* .timepicker-modal {
+.timepicker-modal {
   width: 90% !important;
-} */
+}
 .progress-hidden {
   display: none;
 }
@@ -105,7 +105,114 @@ section#schedule {
   transform: translateX(-50%);
   text-align: center;
 }
-.card {
-  max-width: 370px;
-  margin: 20px;
+
+.input-field i.prefix {
+  font-style: normal;
+  font-size: 18px !important;
+  /* background: teal; */
+  color: teal;
+  height: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+#days-type {
+  font-size: 16px;
+}
+#create-progress {
+  position: absolute;
+  top: 5px;
+  left: 0;
+}
+/* Cards and timeline */
+section#schedule {
+  width: 100%;
+  padding: 30px;
+}
+#schedule-cards {
+  width: 100%;
+}
+.timeline-item {
+  display: flex;
+  position: relative;
+}
+.timeline-content {
+  flex: 1 1 auto;
+  padding: 0 0 0 1rem;
+}
+.timeline-item .card {
+  max-height: 300px;
+  margin-bottom: 40px !important;
+}
+.timeline-item .timeline-icon i {
+  margin-top: 20px;
+  font-size: 24px;
+  background: rgb(29, 134, 134);
+  color: white;
+  border-radius: 50%;
+  padding: 9px;
+}
+.timeline-icon {
+  z-index: 2;
+}
+.timeline-item::before {
+  z-index: 1;
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: 21px;
+  width: 2px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.timeline-item:last-child::before {
+  height: 72%;
+}
+.card .card-title {
+  font-weight: initial;
+}
+.card .card-action a {
+  color: red !important;
+}
+.card.purple {
+  background-color: #eeebfa !important;
+  color: #7557d4 !important;
+}
+.card.purple .day-chip-display {
+  border-color: #7557d4;
+}
+.card.green {
+  background-color: #e9f4f5 !important;
+  color: #309799 !important;
+}
+.card.green .day-chip-display {
+  border-color: #309799;
+}
+.card.yellow {
+  background-color: #fdeeea !important;
+  color: #ee734f !important;
+}
+.card.yellow .day-chip-display {
+  border-color: #ee734f;
+}
+.card.blue {
+  background-color: #c9e7fa !important;
+  color: #306199 !important;
+}
+.card.blue .day-chip-display {
+  border-color: #306199;
+}
+/* Day chips in timeline */
+.days-display {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+.day-chip-display {
+  border: 1px solid;
+  padding: 3px 10px;
+  border-radius: 28px;
+  margin: 0 15px;
+}
+.day-chip-display:first-child {
+  margin-left: 0;
 }

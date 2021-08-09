@@ -53,9 +53,9 @@
       <a href="#email"><span class="white-text email">Opens meets automatically</span></a>
     </div>
   </li>
-  <li class="side_tab active" data-tab="about"><a href="#!" class="waves-effect"><i
+  <li class="side_tab active tab-active" data-tab="schedule"><a href="#!" class="waves-effect">Second Link</a></li>
+  <li class="side_tab" data-tab="about"><a href="#!" class="waves-effect"><i
         class="material-icons teal-text">info</i>About</a></li>
-  <li class="side_tab" data-tab="schedule"><a href="#!" class="waves-effect">Second Link</a></li>
   <li>
     <div class="divider"></div>
   </li>
@@ -118,6 +118,7 @@
         </div>
       </div>
     </div>
+    <div id="schedule-cards"></div>
   </section>
 </main>
 
@@ -151,12 +152,13 @@
           <span class="helper-text" data-error="Invalid format">Full URL or Google Meet code</span>
         </div>
       </div>
-      <h5>Choose Days</h5>
+      <h5>Choose Days <span id="days-type">(Repeat)</span> </h5>
       <div class="row row-tabs">
         <div class="col s12">
           <ul class="tabs">
-            <li class="tab col s6"><a class="active" href="#test1">Repeat</a></li>
-            <li class="tab col s6"><a href="#test2">Custom</a></li>
+            <li class="tab col s6" class="day-mode"><a class="active" href="#test1" id="repeat-mode" class="day-mode"
+                class="day-mode">Repeat</a></li>
+            <li class="tab col s6" class="day-mode"><a href="#test2" id="custom-mode">Custom</a></li>
           </ul>
         </div>
         <div id="test1" class="col s12">
@@ -170,12 +172,45 @@
           </div>
           <div class="row">
             <div class="input-field col s12">
-              <input id="repeat-time" type="text" class="timepicker">
+              <input id="repeat-time" type="text" class="timepicker validate">
               <label for="repeat-time">Choose Time</label>
             </div>
           </div>
         </div>
-        <div id="test2" class="col s12">Test 2</div>
+        <div id="test2" class="col s12">
+          <div class="row">
+            <div class="input-field col s9 m6">
+              <i class="prefix">Mon</i>
+              <input id="custom1" type="text" class="timepicker validate custom-times">
+              <label for="custom1">Choose Time</label>
+            </div>
+            <div class="input-field col s9 m6">
+              <i class=" prefix">Tue</i>
+              <input id="custom2" type="text" class="timepicker validate custom-times">
+              <label for="custom2">Choose Time</label>
+            </div>
+            <div class="input-field col s9 m6">
+              <i class=" prefix">Wed</i>
+              <input id="custom2" type="text" class="timepicker validate custom-times">
+              <label for="custom2">Choose Time</label>
+            </div>
+            <div class="input-field col s9 m6">
+              <i class=" prefix">Thu</i>
+              <input id="custom2" type="text" class="timepicker validate custom-times">
+              <label for="custom2">Choose Time</label>
+            </div>
+            <div class="input-field col s9 m6">
+              <i class=" prefix">Fri</i>
+              <input id="custom2" type="text" class="timepicker validate custom-times">
+              <label for="custom2">Choose Time</label>
+            </div>
+            <div class="input-field col s9 m6">
+              <i class=" prefix">Sat</i>
+              <input id="custom2" type="text" class="timepicker validate custom-times">
+              <label for="custom2">Choose Time</label>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
