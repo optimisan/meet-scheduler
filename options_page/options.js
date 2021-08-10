@@ -1,6 +1,3 @@
-// For random colors
-const colors = ["purple"];
-
 // Tabs switching functionality and time validation
 document.addEventListener("DOMContentLoaded", function () {
   M.AutoInit();
@@ -11,6 +8,9 @@ document.addEventListener("DOMContentLoaded", function () {
     ele.classList.add("validate");
     ele.setAttribute("pattern", "\\d{2}:\\d{2} [AP]M");
   });
+  document
+    .getElementsByClassName("modal-close")[0]
+    .addEventListener("click", clearFields);
 });
 ///////////
 for (const tab of document.querySelectorAll(".side_tab")) {
@@ -94,8 +94,11 @@ function checkDayMode() {
 }
 /// End custom selection handler
 
-//Create subject
+document.getElementById("add-subject-button").addEventListener("click", (e) => {
+  e.currentTarget.classList.remove("pulse");
+});
 
+//Create subject
 document
   .getElementById("create_subject_button")
   .addEventListener("click", () => {
@@ -145,6 +148,9 @@ function handleCreateSubject(cb) {
     // check if subject exists
     chrome.storage.local.get(name, function (data) {
       console.log("data", data);
+      const buttonType = document.getElementById(
+        "create_subject_button"
+      ).innerText;
       if (typeof data[name] === "undefined") {
         chrome.storage.local.set(
           {
@@ -153,10 +159,22 @@ function handleCreateSubject(cb) {
           () => {
             cb();
             createAlarm({ ...subject, name });
+            clearFields();
           }
         );
       } else {
-        showError(1);
+        if (buttonType === "EDIT") {
+          chrome.storage.local.set(
+            {
+              [name]: subject, // computed property
+            },
+            () => {
+              cb();
+              createAlarm({ ...subject, name });
+              clearFields();
+            }
+          );
+        } else showError(1);
       }
     });
   } catch (error) {
@@ -266,4 +284,15 @@ function showError(subjectName, alarmCreation, URL, timeInvalid) {
   if (timeInvalid) {
     M.toast({ html: "Invalid time format. Must be HH:MM AM/PM" });
   }
+}
+function clearFields() {
+  console.log("clearing");
+  document.getElementById("subject_name").disabled = false;
+  [
+    ...document.getElementsByClassName("form")[0].getElementsByTagName("input"),
+  ].forEach((ele) => (ele.value = ""));
+  document.getElementById("create_subject_button").innerText = "CREATE";
+  [...document.getElementsByClassName("custom-times")].forEach((ele) =>
+    ele.setAttribute("data-selected", "false")
+  );
 }

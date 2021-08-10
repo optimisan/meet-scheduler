@@ -1,0 +1,26 @@
+.meet-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20%;
+  width: max-content;
+  z-index: 9999;
+}
+.meet-button button {
+  background-color: teal;
+  color: white;
+  outline: none;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+}
+.error-toast {
+  position: fixed;
+  top: 30px;
+  right: 10px;
+  background-color: black;
+  color: antiquewhite;
+  font-size: 20px;
+  max-width: 200px;
+  min-width: 50px;
+  z-index: 9999;
+}

@@ -11,5 +11,18 @@
     "default_title": "Schedule meets",
     "default_popup": "popup/popup.html"
   },
-  "options_page": "options_page/options_page.html"
+  "options_page": "options_page/options_page.html",
+  "content_scripts": [
+    {
+      "matches": ["https://meet.google.com/*"],
+      "css": ["google-meet.css"],
+      "js": ["meet_script.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["google-meet.html"],
+      "matches": ["https://meet.google.com/*", "https://www.google.com/*"]
+    }
+  ]
 }

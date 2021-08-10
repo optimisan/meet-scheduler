@@ -1,75 +1,128 @@
+"use-strict";
+
 document.addEventListener("DOMContentLoaded", () => {
   chrome.storage.local.get(null, (s) => {
     displaySubjects(s);
   });
 });
+/**
+ * Get a random color
+ */
+const getAColor = () =>
+  ["purple", "green", "yellow", "blue"][Math.floor(Math.random() * 4)];
 
 /**
  * Convert daysWithTimes array indices
  * to Day names
- * Note that the for-in loop on line 19
- * iterates over the indices as `Strings`
+ * (Note that the for-in loop on line 19
+ * iterates over the indices as `Strings`)
+ * Uh that was my old code, now with a forEach loop
+ * we get it as a number
  * @returns Day of week
  */
-String.prototype.dayFromIndex = function () {
+Number.prototype.dayFromIndex = function () {
   // !!Do not use arrow function
   // otherwise "this" will refer to the
   // global window object !!
-  console.log(this[0]); //no idea
-  switch (this[0]) {
-    case "0":
+  //
+  // console.log(this[0]); //no idea
+  // when this was String.prototype... this[0]
+  // was to be used in switch (instead of `this`)
+  const num = +this; // convert to primitive
+  switch (num) {
+    case 0:
       return "Mon";
-    case "1":
+    case 1:
       return "Tue";
-    case "2":
+    case 2:
       return "Wed";
-    case "3":
+    case 3:
       return "Thu";
-    case "4":
+    case 4:
       return "Fri";
-    case "5":
+    case 5:
       return "Sat";
     default:
       return "Day"; // uh oh
   }
 };
+
 function displaySubjects(subjects) {
   const screen = document.getElementById("schedule-cards");
+  screen.innerHTML = "";
   if (Object.keys(subjects).length === 0) {
     screen.innerHTML =
       '<p class="flow-text">You have no meetings yet. Click the "+" icon to add one</p>';
+    document.getElementById("add-subject-button").classList.add("pulse");
+    document.getElementById("schedule-loader").style.display = "none";
+    return;
   }
+  document.getElementById("add-subject-button").classList.remove("pulse");
   // screen.innerHTML = "Done";
-  for (const subjectName in subjects) {
-    console.log(subjects[subjectName]);
-    const subject = subjects[subjectName];
+  // console.log("Sort array", subjects.sortSubjects());
+  const subjectsArray = [];
+  for (const s in subjects) {
+    subjectsArray.push(new Subject(subjects[s], s));
+  }
+  const sortedSubjects = subjectsArray.sort(
+    (a, b) => a.upcomingTime(false) - b.upcomingTime(false)
+  );
+
+  // for (const subjectName in subjects) {
+  //   const subject = new Subject(subjects[subjectName], subjectName);
+  for (const subject of sortedSubjects) {
+    // console.log(s.upcomingTime());
+    // console.log(subjects[subjectName]);
+    // const subject = subjects[subjectName];
     let renderedDays = "";
-    for (const day in subject.daysWithTimes) {
-      if (subject.daysWithTimes[day]) {
-        renderedDays += `
-        <div class="day-chip-display">${day.dayFromIndex()}</div>
-        `;
-      }
-    }
+    // renderedDays = s.getAllTimes();
+    let detailedDays = `
+    <li class="collection-item avatar">
+      <i class="material-icons circle">folder</i>
+      <span class="title">Title</span>
+      <p>First Line <br>
+         Second Line
+      </p>
+      <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+    </li>`;
+    // for (const day in subject.daysWithTimes) {
+    //   if (subject.daysWithTimes[day]) {
+    //     renderedDays += `
+    //     <div class="day-chip-display">${day.dayFromIndex()}</div>
+    //     `;
+    //   }
+    // }
     const card = `
-<div class="timeline-item">
-  <div class="timeline-icon">
-    <i class="material-icons">check</i>
+<div class="timeline-item" id="timeline-item-${subject.name}">
+  <div class="timeline-icon ${subject.disabled}" data-subject-name="${
+      subject.name
+    }">
+    <i class="material-icons">${subject.icon}</i>
   </div>
   <div class="timeline-content">
-    <div class="card blue">
+    <div class="card ${subject.color} ${subject.disabled}">
       <div class="card-content">
-        <span class="card-title">${subjectName}</span>
-        <div class='days-display'>${renderedDays}</div>
-        <a href="#!" class="activator">Times</a>
+      <span class="new badge" data-badge-caption="">${subject.upcomingTime()}</span>
+        <span class="card-title">${subject.name}</span>
+        <div class='days-display'>${subject.getAllTimes()}</div>
       </div>
-      <div class="card-reveal">
-      <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
-      <p>Here is some more information about this product that is only revealed once clicked on.</p>
-    </div>
       <div class="card-action">
-        <a href="#">Edit</a>
-        <a href="#">Delete</a>
+        <a class="waves-effect waves-green ${
+          subject.meetingCode()
+            ? "meeting-code purple white-text"
+            : "normal-url"
+        }" href="${subject.meetUrl}" target="_blank"> ${
+      subject.meetingCode() ?? subject.meetUrl
+    }</a>
+        <div>
+
+        <button data-target="create-subject-modal" class="edit-button white-text waves-effect modal-trigger waves-teal" data-subject-name="${
+          subject.name
+        }"><i class="material-icons">edit</i></button>
+        <button class="delete-button red-text waves-effect waves-red" data-subject-name="${
+          subject.name
+        }"><i class="material-icons">delete</i></button>
+        </div>
       </div>
     </div>
   </div>
@@ -78,6 +131,103 @@ function displaySubjects(subjects) {
     screen.innerHTML += card;
   }
   document.getElementById("schedule-loader").style.display = "none";
+  initializeActionButtons();
+  initializeDisableSubjects();
 }
 
-function editing(subjectName) {}
+/**
+ * Edit and delete buttons
+ */
+function initializeActionButtons() {
+  // Delete buttons
+  document.querySelectorAll(".delete-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const name = button.getAttribute("data-subject-name");
+      document.getElementById(`timeline-item-${name}`).classList.add("deleted");
+      M.toast({
+        html: `<span>Deleted ${name}</span><button class="btn-flat toast-action" id="button-${name}">Undo</button>`,
+        displayLength: 6000,
+      });
+      const deleteTimeOut = setTimeout(() => {
+        chrome.alarms
+          .clear(name)
+          .then((val) => {
+            chrome.storage.local.remove(name, (message) => {
+              console.log(message);
+            });
+          })
+          .catch((e) => {
+            console.log(e);
+            M.toast({ html: "Deletion failed" });
+            document
+              .getElementById(`timeline-item-${name}`)
+              .classList.remove("deleted");
+          });
+      }, 6300);
+      document
+        .getElementById(`button-${name}`)
+        .addEventListener("click", () => {
+          clearTimeout(deleteTimeOut);
+          document
+            .getElementById(`timeline-item-${name}`)
+            .classList.remove("deleted");
+          // M.Toast.dismissAll();
+        });
+    });
+  });
+  document.querySelectorAll(".edit-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const name = button.getAttribute("data-subject-name");
+      fillEditModal(name);
+    });
+  });
+}
+Number.prototype.fromMidnightToTime = function () {
+  const hours = Math.floor(+this / 60);
+  const x = hours >= 12 ? "PM" : "AM";
+  const minutes = Math.floor(+this % 60);
+  return `${hours % 12}:${minutes} ${x}`;
+};
+function fillEditModal(subjectName) {
+  document.getElementById("create_subject_button").innerText = "EDIT";
+  chrome.storage.local.get(subjectName, (data) => {
+    const subject = data[subjectName];
+    document.getElementById("subject_name").value = subjectName;
+    document.getElementById("meet_url").value = subject.meetUrl;
+    let allTimesSame = -2,
+      theSameTime,
+      timeIndexes = [];
+    for (let i = 0; i < subject.daysWithTimes.length; i++) {
+      const time = subject.daysWithTimes[i];
+      console.log(allTimesSame);
+      if (time) {
+        timeIndexes.push(i);
+        theSameTime = time;
+        if (allTimesSame === -2) {
+          allTimesSame = time;
+        } else if (allTimesSame !== -1 && allTimesSame !== time) {
+          allTimesSame = -1;
+        }
+
+        document.getElementsByClassName("custom-times")[i].value =
+          time.fromMidnightToTime();
+      }
+    }
+
+    if (allTimesSame !== -1) {
+      timeIndexes.forEach((i) => {
+        document
+          .querySelectorAll(".days .day-chip")
+          [i].setAttribute("data-selected", "true");
+      });
+      document.getElementById("repeat-time").value =
+        theSameTime.fromMidnightToTime();
+    }
+    M.updateTextFields();
+  });
+}
+chrome.storage.onChanged.addListener((changes, platform) => {
+  chrome.storage.local.get(null, (s) => {
+    displaySubjects(s);
+  });
+});

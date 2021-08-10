@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log(request);
   const name = request.subjectName;
   const times = request.daysWithTimes;
-  _createAlarm(times, name);
+  if (!request.disabled) _createAlarm(times, name);
   sendResponse({ message: "Done", status: "success" });
 });
 // @ts-ignore
@@ -19,7 +19,8 @@ chrome.alarms.onAlarm.addListener((alarm) => {
       chrome.tabs.create({ url: subject[alarm.name].meetUrl });
     }
     // create next alarm
-    _createAlarm(subject[alarm.name].daysWithTimes, alarm.name);
+    if (!subject[alarm.name].disabled)
+      _createAlarm(subject[alarm.name].daysWithTimes, alarm.name);
   });
   // @ts-ignore
   // chrome.tabs.create({ url: "https://meet.google.com/?" + alarm.name });
@@ -89,13 +90,14 @@ function _createAlarm(times, subjectName) {
         minutesAfterTodayMidnightTillFirstAlarm -
         (Date.now() - todayMidnight.getTime()) / 60000;
 
-      console.log("Alarm in ", minutesAfterNowTillFirstAlarm);
+      console.log("Alarm", subjectName, " in ", minutesAfterNowTillFirstAlarm);
       if (minutesAfterNowTillFirstAlarm <= 0 && correction === today) {
         // Increment correction so that this loop reaches this day
         // the next week
         correction++;
         continue;
       }
+
       chrome.alarms.create(subjectName, {
         delayInMinutes: minutesAfterNowTillFirstAlarm,
         // Don't periodInMinutes: 10080,

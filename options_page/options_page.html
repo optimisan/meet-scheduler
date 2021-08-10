@@ -29,206 +29,239 @@
 </head>
 
 <body>
-  <header>
+  <!-- <header>
     <nav>
       <div class="nav-wrapper teal">
         <a href="#" class="brand-logo">Meet Scheduler</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li><a href="sass.html">Sass</a></li>
-          <li><a href="badges.html">Components</a></li>
-          <li><a href="collapsible.html">JavaScript</a></li>
+          <li><a target="_blank" href="https://github.com/Akshat-Oke/meet-scheduler"
+              style="display: flex; align-items: center;"><span class="gh"></span>GitHub</a></li>
         </ul>
       </div>
     </nav>
-  </header>
-</body>
-<ul id="slide-out" class="sidenav sidenav-fixed">
-  <li>
-    <div class="user-view">
-      <div class="background">
-        <img src="desk.jpg">
+  </header> -->
+  <ul id="slide-out" class="sidenav sidenav-fixed">
+    <li>
+      <div class="user-view">
+        <div class="background">
+          <img src="desk.jpg">
+        </div>
+        <a href="#name"><span class="white-text name">Meetimely</span></a>
+        <a href="#email"><span class="white-text email">Opens meets automatically</span></a>
       </div>
+    </li>
+    <li class="side_tab" data-tab="schedule"><a href="#!" class="waves-effect">
+        <i class="material-icons teal-text">event_note</i>
+        Timeline</a></li>
+    <li class="side_tab active tab-active" data-tab="about"><a href="#!" class="waves-effect"><i
+          class="material-icons teal-text">info</i>About</a></li>
+    <li>
+      <div class="divider"></div>
+    </li>
+    <li><a class="subheader">Subheader</a></li>
+    <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+  </ul>
+  <main>
 
-      <a href="#name"><span class="white-text name">Meet Scheduler</span></a>
-      <a href="#email"><span class="white-text email">Opens meets automatically</span></a>
-    </div>
-  </li>
-  <li class="side_tab active tab-active" data-tab="schedule"><a href="#!" class="waves-effect">Second Link</a></li>
-  <li class="side_tab" data-tab="about"><a href="#!" class="waves-effect"><i
-        class="material-icons teal-text">info</i>About</a></li>
-  <li>
-    <div class="divider"></div>
-  </li>
-  <li><a class="subheader">Subheader</a></li>
-  <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
-</ul>
-<main>
-  <section id="about" class="tab-content">
-    About section
-  </section>
-  <section id="schedule" class="tab-content">
-    <div class="loader-wrapper" id="schedule-loader">
-      <div class="preloader-wrapper big active">
-        <div class="spinner-layer spinner-blue">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
+    <section id="schedule" class="tab-content">
+      <h2 style="margin-top: 0px">Upcoming meetings</h2>
+      <div class="loader-wrapper" id="schedule-loader">
+        <div class="preloader-wrapper big active">
+          <div class="spinner-layer spinner-blue">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
           </div>
-          <div class="gap-patch">
-            <div class="circle"></div>
-          </div>
-          <div class="circle-clipper right">
-            <div class="circle"></div>
-          </div>
-        </div>
 
-        <div class="spinner-layer spinner-red">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
+          <div class="spinner-layer spinner-red">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
           </div>
-          <div class="gap-patch">
-            <div class="circle"></div>
-          </div>
-          <div class="circle-clipper right">
-            <div class="circle"></div>
-          </div>
-        </div>
 
-        <div class="spinner-layer spinner-yellow">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
+          <div class="spinner-layer spinner-yellow">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
           </div>
-          <div class="gap-patch">
-            <div class="circle"></div>
-          </div>
-          <div class="circle-clipper right">
-            <div class="circle"></div>
-          </div>
-        </div>
 
-        <div class="spinner-layer spinner-green">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
-          </div>
-          <div class="gap-patch">
-            <div class="circle"></div>
-          </div>
-          <div class="circle-clipper right">
-            <div class="circle"></div>
+          <div class="spinner-layer spinner-green">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div id="schedule-cards"></div>
-  </section>
-</main>
+      <div id="schedule-cards"></div>
+    </section>
+    <section id="about" class="tab-content" style="padding: 0 20px; padding-bottom: 30px;">
+      <h2 class="teal-text">What is Meetimely</h2>
+      <p>Meetimely (Meet + timely) is <span class="teal-text">THE extension</span> you needed all this time. Meetimely
+        allows you to
+        set your lecture meeting links to open them automatically at specified times.</p>
+      <blockquote>
+        No more fumbling around in your email/chats/notes to find that damn link. Just set it once and attend
+        lectures/meetings hassle-free!
+      </blockquote>
+      <div class="divider"></div>
+      <h2 class="teal-text">Google Meet</h2>
+      <p>Meetimely can open Google Meet links and alsojoin the meet after muting yourself and switching off your camera
+        automatically</p>
+      <p>Send quick pre-set message (Ex. Attendance/ Submission) with one click!</p>
+      <blockquote>Press the "Quick Message" button that floats in the Google Meet tab</blockquote>
+      <h2 class="teal-text">Get Started</h2>
+      <p>Press the plus icon button to add a new meeting. Meeting names (subjects) must be <strong>unique</strong>.
+        Add the meeting link or the Google Meet code (xxx-yyyy-zzz) and choose your days and times</p>
+      <blockquote>All meetings are assumed to repeat weekly</blockquote>
+      <p>Chooing times: </p>
+      <h4>Repeat</h4>
+      <p>Select the days and set the time below. This will open the meeting on the same time for the selected days</p>
+      <p>Ex. Mon, Wed, Fri 3:00 PM</p>
+      <h4>Custom</h4>
+      <p>If your meeting/lectures are not at the same time for the scheduled days in a week, you can set the times for
+        each day individually. Leave blank if there's no meeting</p>
+      <div class="divider"></div>
+      <h2 class="teal-text">Editing</h2>
+      <p>In the timeline view, click the pencil icon <i class="material-icons">edit</i> to edit the meeting details.</p>
+      <p>To temporarily disable a scheduled meeting, click the tick-mark <i class="teal-text material-icons">check</i>
+        to the
+        left. Meetings disabled won't open unless you manually enable them</p>
+    </section>
+  </main>
 
-<div class="fixed-action-btn">
-  <a class="btn-floating btn-large modal-trigger" href="#create-subject-modal">
-    <i class="large material-icons">add</i>
-  </a>
-</div>
-
-
-
-<!-- New Subject Modal-->
-<div id="create-subject-modal" class="modal modal-fixed-footer-custom">
-  <div class="progress progress-hidden" id="create-progress">
-    <div class="indeterminate"></div>
+  <div class="fixed-action-btn">
+    <a class="btn-floating btn-large modal-trigger" href="#create-subject-modal" id="add-subject-button">
+      <i class="large material-icons">add</i>
+    </a>
   </div>
-  <div class="modal-content">
-    <h4>Create a new Subject</h4>
-    <div class="form">
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="subject_name" type="text" class="validate">
-          <label for="subject_name">Subject Name</label>
-          <span class="helper-text" data-error="Subject already exists">Subject names must be unique</span>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="meet_url" type="text" class="validate" placeholder="abc-defg-hij or https://your_meeting.xyz/code">
-          <label for="meet_url">Meeting URL</label>
-          <span class="helper-text" data-error="Invalid format">Full URL or Google Meet code</span>
-        </div>
-      </div>
-      <h5>Choose Days <span id="days-type">(Repeat)</span> </h5>
-      <div class="row row-tabs">
-        <div class="col s12">
-          <ul class="tabs">
-            <li class="tab col s6" class="day-mode"><a class="active" href="#test1" id="repeat-mode" class="day-mode"
-                class="day-mode">Repeat</a></li>
-            <li class="tab col s6" class="day-mode"><a href="#test2" id="custom-mode">Custom</a></li>
-          </ul>
-        </div>
-        <div id="test1" class="col s12">
-          <div class="days">
-            <div class="day-chip">Mon</div>
-            <div class="day-chip">Tue</div>
-            <div class="day-chip">Wed</div>
-            <div class="day-chip">Thu</div>
-            <div class="day-chip">Fri</div>
-            <div class="day-chip">Sat</div>
-          </div>
-          <div class="row">
-            <div class="input-field col s12">
-              <input id="repeat-time" type="text" class="timepicker validate">
-              <label for="repeat-time">Choose Time</label>
-            </div>
+
+
+
+  <!-- New Subject Modal-->
+  <div id="create-subject-modal" class="modal modal-fixed-footer-custom">
+    <div class="progress progress-hidden" id="create-progress">
+      <div class="indeterminate"></div>
+    </div>
+    <div class="modal-content">
+      <h4>Create a new Subject</h4>
+      <div class="form">
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="subject_name" type="text" class="validate">
+            <label for="subject_name">Subject Name</label>
+            <span class="helper-text" data-error="Subject already exists">Subject names must be unique</span>
           </div>
         </div>
-        <div id="test2" class="col s12">
-          <div class="row">
-            <div class="input-field col s9 m6">
-              <i class="prefix">Mon</i>
-              <input id="custom1" type="text" class="timepicker validate custom-times">
-              <label for="custom1">Choose Time</label>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="meet_url" type="text" class="validate"
+              placeholder="abc-defg-hij or https://your_meeting.xyz/code">
+            <label for="meet_url">Meeting URL</label>
+            <span class="helper-text" data-error="Invalid format">Full URL or Google Meet code</span>
+          </div>
+        </div>
+        <h5>Choose Days <span id="days-type">(Repeat)</span> </h5>
+        <div class="row row-tabs">
+          <div class="col s12">
+            <ul class="tabs">
+              <li class="tab col s6" class="day-mode"><a class="active" href="#test1" id="repeat-mode" class="day-mode"
+                  class="day-mode">Repeat</a></li>
+              <li class="tab col s6" class="day-mode"><a href="#test2" id="custom-mode">Custom</a></li>
+            </ul>
+          </div>
+          <div id="test1" class="col s12">
+            <div class="days">
+              <div class="day-chip">Mon</div>
+              <div class="day-chip">Tue</div>
+              <div class="day-chip">Wed</div>
+              <div class="day-chip">Thu</div>
+              <div class="day-chip">Fri</div>
+              <div class="day-chip">Sat</div>
             </div>
-            <div class="input-field col s9 m6">
-              <i class=" prefix">Tue</i>
-              <input id="custom2" type="text" class="timepicker validate custom-times">
-              <label for="custom2">Choose Time</label>
+            <div class="row">
+              <div class="input-field col s12">
+                <input id="repeat-time" type="text" class="timepicker validate">
+                <label for="repeat-time">Choose Time</label>
+              </div>
             </div>
-            <div class="input-field col s9 m6">
-              <i class=" prefix">Wed</i>
-              <input id="custom2" type="text" class="timepicker validate custom-times">
-              <label for="custom2">Choose Time</label>
-            </div>
-            <div class="input-field col s9 m6">
-              <i class=" prefix">Thu</i>
-              <input id="custom2" type="text" class="timepicker validate custom-times">
-              <label for="custom2">Choose Time</label>
-            </div>
-            <div class="input-field col s9 m6">
-              <i class=" prefix">Fri</i>
-              <input id="custom2" type="text" class="timepicker validate custom-times">
-              <label for="custom2">Choose Time</label>
-            </div>
-            <div class="input-field col s9 m6">
-              <i class=" prefix">Sat</i>
-              <input id="custom2" type="text" class="timepicker validate custom-times">
-              <label for="custom2">Choose Time</label>
+          </div>
+          <div id="test2" class="col s12">
+            <div class="row">
+              <div class="input-field col s9 m6">
+                <i class="prefix">Mon</i>
+                <input id="custom1" type="text" class="timepicker validate custom-times">
+                <label for="custom1">Choose Time</label>
+              </div>
+              <div class="input-field col s9 m6">
+                <i class=" prefix">Tue</i>
+                <input id="custom2" type="text" class="timepicker validate custom-times">
+                <label for="custom2">Choose Time</label>
+              </div>
+              <div class="input-field col s9 m6">
+                <i class=" prefix">Wed</i>
+                <input id="custom2" type="text" class="timepicker validate custom-times">
+                <label for="custom2">Choose Time</label>
+              </div>
+              <div class="input-field col s9 m6">
+                <i class=" prefix">Thu</i>
+                <input id="custom2" type="text" class="timepicker validate custom-times">
+                <label for="custom2">Choose Time</label>
+              </div>
+              <div class="input-field col s9 m6">
+                <i class=" prefix">Fri</i>
+                <input id="custom2" type="text" class="timepicker validate custom-times">
+                <label for="custom2">Choose Time</label>
+              </div>
+              <div class="input-field col s9 m6">
+                <i class=" prefix">Sat</i>
+                <input id="custom2" type="text" class="timepicker validate custom-times">
+                <label for="custom2">Choose Time</label>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <div class="modal-footer">
+
+      <button href="#!" id="create_subject_button" class="waves-effect waves-green btn-flat teal-text">Create</button>
+      <a href="#!" class="modal-close waves-effect waves-red red-text btn-flat">Cancel</a>
+    </div>
   </div>
-  <div class="modal-footer">
-
-    <button href="#!" id="create_subject_button" class="waves-effect waves-green btn-flat teal-text">Create</button>
-    <a href="#!" class="modal-close waves-effect waves-red red-text btn-flat">Cancel</a>
-  </div>
-</div>
 
 
-<!-- Compiled and minified JavaScript -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
-<script src="../materialize.min.js"></script>
-<script src="./create_alarm.js"></script>
-<script src="./options.js"></script>
-<script src="./list.js"></script>
-<script id="blockOfStuff" type="text/html">
+  <!-- Compiled and minified JavaScript -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
+  <script src="../materialize.min.js"></script>
+  <script src="./subject_actions.js"></script>
+  <script src="./create_alarm.js"></script>
+  <script src="./options.js"></script>
+  <script src="./list.js"></script>
+  <script id="blockOfStuff" type="text/html">
   <div class="card blue-grey darken-1">
     <div class="card-content white-text">
       <span class="card-title">{Title}</span>
