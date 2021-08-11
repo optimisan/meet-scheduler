@@ -62,7 +62,8 @@ function displaySubjects(subjects) {
   // console.log("Sort array", subjects.sortSubjects());
   const subjectsArray = [];
   for (const s in subjects) {
-    subjectsArray.push(new Subject(subjects[s], s));
+    if (subjects[s].daysWithTimes)
+      subjectsArray.push(new Subject(subjects[s], s));
   }
   const sortedSubjects = subjectsArray.sort(
     (a, b) => a.upcomingTime(false) - b.upcomingTime(false)
@@ -129,6 +130,13 @@ function displaySubjects(subjects) {
 </div>
     `;
     screen.innerHTML += card;
+  }
+  if (screen.innerHTML === "") {
+    screen.innerHTML =
+      '<p class="flow-text">You have no meetings yet. Click the "+" icon to add one</p>';
+    document.getElementById("add-subject-button").classList.add("pulse");
+    document.getElementById("schedule-loader").style.display = "none";
+    return;
   }
   document.getElementById("schedule-loader").style.display = "none";
   initializeActionButtons();
@@ -200,7 +208,7 @@ function fillEditModal(subjectName) {
     for (let i = 0; i < subject.daysWithTimes.length; i++) {
       const time = subject.daysWithTimes[i];
       console.log(allTimesSame);
-      if (time) {
+      if (time != null) {
         timeIndexes.push(i);
         theSameTime = time;
         if (allTimesSame === -2) {

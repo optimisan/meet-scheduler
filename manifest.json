@@ -3,7 +3,7 @@
   "version": "0.1",
   "description": "An extension to start meetings automatically",
   "manifest_version": 3,
-  "permissions": ["storage", "alarms"],
+  "permissions": ["storage", "alarms", "tabs"],
   "background": {
     "service_worker": "background.js"
   },

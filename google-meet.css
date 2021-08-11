@@ -1,6 +1,6 @@
 .meet-button {
   position: fixed;
-  bottom: 20px;
+  bottom: 23px;
   right: 20%;
   width: max-content;
   z-index: 9999;
@@ -12,6 +12,7 @@
   border: none;
   border-radius: 8px;
   font-size: 16px;
+  padding: 8px 10px;
 }
 .error-toast {
   position: fixed;

@@ -2,37 +2,51 @@
 document.addEventListener("DOMContentLoaded", function () {
   M.AutoInit();
   var time_tabs = M.Tabs.init(document.querySelector(".row-tabs .tabs"), {});
+  M.Sidenav.init(document.querySelector(".sidenav"), {});
 
   // time validation
   [...document.getElementsByClassName("timepicker")].forEach((ele) => {
     ele.classList.add("validate");
     ele.setAttribute("pattern", "\\d{2}:\\d{2} [AP]M");
   });
+  // clear fields when user cancels modal
   document
     .getElementsByClassName("modal-close")[0]
     .addEventListener("click", clearFields);
-});
-///////////
-for (const tab of document.querySelectorAll(".side_tab")) {
-  // const tab_id = tab.getElementsByClassName("a")[0].href;
-  if (tab.classList.contains("tab-active")) {
-    const tabId = tab.getAttribute("data-tab").trim();
-    document.getElementById(tabId)?.classList.add("tab-active");
-  }
-  tab.addEventListener("click", (e) => {
-    document.querySelectorAll(".side_tab").forEach((tab) => {
-      tab.classList?.remove("active");
-    });
-    tab.classList?.add("active");
-    e.preventDefault();
-    const tabId = tab.getAttribute("data-tab").trim();
 
-    document.querySelectorAll(".tab-content").forEach((tab) => {
-      tab.classList?.remove("tab-active");
-    });
-    document.getElementById(tabId)?.classList.add("tab-active");
+  /////////// Switch tabs
+  chrome.storage.local.get("firstLoad", (data) => {
+    const firstLoad = data.firstLoad;
+    if (firstLoad) {
+      document.querySelectorAll(".side_tab").forEach((tab) => {
+        tab.classList?.remove("active");
+      });
+      document.querySelector('li[data-tab="about"]').classList.add("active");
+      document.getElementById("about")?.classList.add("tab-active");
+    }
+    chrome.storage.local.remove("firstLoad");
   });
-}
+  for (const tab of document.querySelectorAll(".side_tab")) {
+    // const tab_id = tab.getElementsByClassName("a")[0].href;
+    if (tab.classList.contains("tab-active")) {
+      const tabId = tab.getAttribute("data-tab").trim();
+      document.getElementById(tabId)?.classList.add("tab-active");
+    }
+    tab.addEventListener("click", (e) => {
+      document.querySelectorAll(".side_tab").forEach((tab) => {
+        tab.classList?.remove("active");
+      });
+      tab.classList?.add("active");
+      e.preventDefault();
+      const tabId = tab.getAttribute("data-tab").trim();
+
+      document.querySelectorAll(".tab-content").forEach((tab) => {
+        tab.classList?.remove("tab-active");
+      });
+      document.getElementById(tabId)?.classList.add("tab-active");
+    });
+  }
+});
 ////////////Tabs end
 
 document.querySelectorAll(".day-chip").forEach((day) => {
@@ -134,16 +148,19 @@ function handleCreateSubject(cb) {
   console.log(name);
   if (!name) return M.toast({ html: "Subject name cannot be empty" });
   const url = getUrl(document.getElementById("meet_url").value?.trim());
-  console.log(url);
+  const duration = document.getElementById("meet_duration").value;
+  if (duration < 0)
+    return M.toast({ html: "Meeting duration cannot be negative" });
   try {
     const daysWithTimes = customSelected.value
       ? getCustomDaysAndTimes()
       : getRepeatDaysAndTimes();
     console.log(daysWithTimes);
     const subject = {
-      daysWithTimes: daysWithTimes,
+      daysWithTimes,
       meetUrl: url,
       disabled: false,
+      duration,
     };
     // check if subject exists
     chrome.storage.local.get(name, function (data) {
@@ -178,9 +195,9 @@ function handleCreateSubject(cb) {
       }
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     if (Array.isArray(error))
-      //safety
+      //for safety check if array
       showError(...error);
     else {
       // eh just some little error of which I have no idea of
@@ -188,8 +205,6 @@ function handleCreateSubject(cb) {
       console.log(error);
     }
   }
-
-  //TODO: Add custom days and times
 }
 function getUrl(url) {
   const regex = /https?:\/\//gi;
@@ -243,7 +258,7 @@ function getCustomDaysAndTimes() {
   }
 }
 function getMinutesPastMidnight(time) {
-  const regex = /^\d{1,2}:\d\d [AP]M$/g;
+  const regex = /^\d{1,2}:\d{1,2} [AP]M$/g;
   console.log(time);
   const isValid = regex.test(time);
   if (!time || !isValid) {

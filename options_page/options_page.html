@@ -29,37 +29,46 @@
 </head>
 
 <body>
-  <!-- <header>
-    <nav>
+  <header>
+    <nav class="show-on-small hide-on-large-only">
       <div class="nav-wrapper teal">
-        <a href="#" class="brand-logo">Meet Scheduler</a>
+        <a href="#" class="brand-logo">Meetimely</a>
+        <a href="#!" data-target="slide-out" class="sidenav-trigger"><i class="material-icons black-text">menu</i></a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
           <li><a target="_blank" href="https://github.com/Akshat-Oke/meet-scheduler"
               style="display: flex; align-items: center;"><span class="gh"></span>GitHub</a></li>
         </ul>
       </div>
     </nav>
-  </header> -->
-  <ul id="slide-out" class="sidenav sidenav-fixed">
+  </header>
+  <ul id="slide-out" class="sidenav sidenav-fixed" style="display: flex; flex-flow: column;">
     <li>
       <div class="user-view">
         <div class="background">
           <img src="desk.jpg">
         </div>
-        <a href="#name"><span class="white-text name">Meetimely</span></a>
-        <a href="#email"><span class="white-text email">Opens meets automatically</span></a>
+        <a href="#!"><span class="white-text name">Meetimely</span></a>
+        <a href="#!"><span class="white-text email">Opens meets automatically</span></a>
       </div>
     </li>
-    <li class="side_tab" data-tab="schedule"><a href="#!" class="waves-effect">
+    <!-- <li class="side_tab"></li> -->
+    <li class="side_tab active tab-active" data-tab="schedule"><a href="#!" class="waves-effect">
         <i class="material-icons teal-text">event_note</i>
         Timeline</a></li>
-    <li class="side_tab active tab-active" data-tab="about"><a href="#!" class="waves-effect"><i
+    <li class="side_tab" data-tab="about"><a href="#!" class="waves-effect"><i
           class="material-icons teal-text">info</i>About</a></li>
-    <li>
+    <li class="side_tab" data-tab="settings"><a href="#!" class="waves-effect"><i
+          class="material-icons teal-text">settings</i>Settings</a></li>
+    <div style="flex-grow: 1; display: flex;flex-direction: column; justify-content: flex-end;">
+      <li><a target="_blank" href="https://github.com/Akshat-Oke/meet-scheduler"
+          style="display: flex; align-items: center;" class="waves-effect waves-green teal-text"><span
+            class="gh"></span>GitHub</a></li>
+    </div>
+    <!-- <li>
       <div class="divider"></div>
     </li>
     <li><a class="subheader">Subheader</a></li>
-    <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+    <li><a class="waves-effect" href="#!">Third Link With Waves</a></li> -->
   </ul>
   <main>
 
@@ -120,16 +129,15 @@
     </section>
     <section id="about" class="tab-content" style="padding: 0 20px; padding-bottom: 30px;">
       <h2 class="teal-text">What is Meetimely</h2>
-      <p>Meetimely (Meet + timely) is <span class="teal-text">THE extension</span> you needed all this time. Meetimely
-        allows you to
-        set your lecture meeting links to open them automatically at specified times.</p>
+      <p>Meetimely (Meet + timely) allows you to set your lecture meeting links to open them automatically at specified
+        times.</p>
       <blockquote>
-        No more fumbling around in your email/chats/notes to find that damn link. Just set it once and attend
+        No more fumbling around in your email/chats/notes to find that link. Just set it once and attend
         lectures/meetings hassle-free!
       </blockquote>
       <div class="divider"></div>
-      <h2 class="teal-text">Google Meet</h2>
-      <p>Meetimely can open Google Meet links and alsojoin the meet after muting yourself and switching off your camera
+      <h3 class="teal-text">Google Meet</h3>
+      <p>Meetimely can open Google Meet links and also join the meet after muting yourself and switching off your camera
         automatically</p>
       <p>Send quick pre-set message (Ex. Attendance/ Submission) with one click!</p>
       <blockquote>Press the "Quick Message" button that floats in the Google Meet tab</blockquote>
@@ -151,8 +159,75 @@
         to the
         left. Meetings disabled won't open unless you manually enable them</p>
     </section>
+    <section id="settings" class="tab-content">
+      <h2 class="teal-text">Settings</h2>
+      <div class="container">
+        <div class="row"><button id="turn-off" class="btn waves-effect red white-text">Disable all meetings</button>
+        </div>
+        <div class="rest-settings">
+          <div class="row flex">
+            <span class="flow-text">
+              Automatically join Google Meet
+            </span>
+            <div class="switch">
+              <label>
+                Off
+                <input type="checkbox" id="auto_join_meet">
+                <span class="lever"></span>
+                On
+              </label>
+            </div>
+          </div>
+          <div class="row flex">
+            <div class="flow-text">
+              Automatically end Google Meet
+              <!-- <label>
+                Off
+                <input type="checkbox" id="auto_end_meet">
+                <span class="lever"></span>
+                On
+              </label> -->
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <select id="auto_end_meet">
+                <!-- <option value="" disabled selected>Choose your option</option> -->
+                <option value="off">Don't end automatically</option>
+                <option value="tab">By closing the tab</option>
+                <option value="call">By ending the call</option>
+              </select>
+              <label>End Method Method</label>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <h4>Quick Message</h4>
+          <div class="row flex">
+            <p class="flow-text">Show quick message button in Google Meet</p>
+            <div class="switch">
+              <label>
+                No
+                <input type="checkbox" id="show_quick_message">
+                <span class="lever"></span>
+                Show
+              </label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <textarea id="quick_message" class="materialize-textarea">John Doe, 2020CDOK321X</textarea>
+              <label for="quick_message">Your message</label>
+              <span class="helper-text">Your message is not sent anywhere else and is stored only on your machine</span>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <button id="delete_all" class="btn red white-text waves-effect">Delete all meetings</button>
+        </div>
+      </div>
+    </section>
   </main>
 
+  <!-- FAB -->
   <div class="fixed-action-btn">
     <a class="btn-floating btn-large modal-trigger" href="#create-subject-modal" id="add-subject-button">
       <i class="large material-icons">add</i>
@@ -182,6 +257,16 @@
               placeholder="abc-defg-hij or https://your_meeting.xyz/code">
             <label for="meet_url">Meeting URL</label>
             <span class="helper-text" data-error="Invalid format">Full URL or Google Meet code</span>
+          </div>
+        </div>
+        <h5>Meeting Duration <span style="font-size: 17px">(in minutes)</span></h5>
+        <p>Meeting will be automatically closed after this duration. Leave as 0 to not auto close</p>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="meet_duration" type="number" class="validate" min="0">
+            <label for="meet_duration">Meeting Duration in minutes</label>
+            <span class="helper-text" data-error="Invalid format">To set the auto close method, go to <a href=""
+                class="side_tab modal-close" data-tab="settings">settings</a></span>
           </div>
         </div>
         <h5>Choose Days <span id="days-type">(Repeat)</span> </h5>
@@ -261,18 +346,7 @@
   <script src="./create_alarm.js"></script>
   <script src="./options.js"></script>
   <script src="./list.js"></script>
-  <script id="blockOfStuff" type="text/html">
-  <div class="card blue-grey darken-1">
-    <div class="card-content white-text">
-      <span class="card-title">{Title}</span>
-      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quia maiores, voluptatum accusamus corrupti nam minus qui saepe! Sit nobis magnam maiores consequatur blanditiis at repellat eveniet veniam? Tempora, nulla eveniet.</p>
-    </div>
-    <div class="card-action">
-      <a href="#">Edit</a>
-      <a href="#">Delete</a>
-    </div>
-  </div>
-</script>
+  <script src="./settings.js"></script>
 </body>
 
 </html>

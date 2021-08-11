@@ -17,7 +17,7 @@ function Subject(subject, name) {
     let renderedDays = "";
     this.times.forEach((time, day) => {
       // day = day.toString();
-      if (time) {
+      if (time != null) {
         renderedDays += `
         <div class="day-chip-display">${day.dayFromIndex()} ${time.timeToString(
           { short: true }
@@ -51,7 +51,7 @@ function Subject(subject, name) {
     ) {
       const day = index % this.times.length; //to wrap around
       // if (index < times.length + correction - 1) break;
-      if (this.times[day]) {
+      if (this.times[day] != null) {
         const daysTillFirstAlarm =
           today <= day
             ? today === day && correction > today
@@ -109,7 +109,7 @@ function disableSubject(subjectName) {
 Number.prototype.timeToString = function ({ short = false }) {
   const time = +this;
   if (time < 60) {
-    return `In ${Math.floor(time)} minutes`;
+    return short ? `0:${Math.floor(time)}` : `In ${Math.floor(time)} minutes`;
   } else if (time < 1440) {
     return short
       ? `${Math.floor(time / 60)}:${Math.floor(time % 60)}`
