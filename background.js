@@ -13,11 +13,23 @@ chrome.runtime.onInstalled.addListener((details) => {
     });
   }
 });
+function sendNotification(request) {
+  chrome.notifications.create({
+    iconUrl: "icon48.png",
+    message: request.message ?? "A meeting was closed automatically",
+    title: request.title ?? "A meeting ended",
+    type: "basic",
+  });
+}
 // @ts-ignore
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log(request);
-  if (request.endTab) {
+  if (request.closeTab) {
+    sendNotification(request);
     return chrome.tabs.remove(sender.tab.id);
+  }
+  if (request.sendNotification) {
+    return sendNotification(request);
   }
   // Else create alarm for opening a meeting
   const name = request.subjectName;
@@ -30,6 +42,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 // @ts-ignore
 chrome.alarms.onAlarm.addListener((alarm) => {
   console.log(alarm.name);
+
   chrome.storage.local.get(alarm.name, async (subject) => {
     // console.log(subject[alarm.name]);
     if (subject[alarm.name]) {
@@ -48,6 +61,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
       // });
       // create next alarm
       if (!subject[alarm.name].disabled) {
+        console.log("Creating next alarm");
         _createAlarm(subject[alarm.name].daysWithTimes, alarm.name);
         _createEndCallAlarm(
           subject[alarm.name].meetUrl,
@@ -56,6 +70,22 @@ chrome.alarms.onAlarm.addListener((alarm) => {
       }
     }
   });
+  const regex = /end__.+__/gi;
+  if (regex.test(alarm.name)) {
+    chrome.storage.local.get("autoEnd", async (data) => {
+      const method = data.autoEnd;
+      const meetUrl = alarm.name.substring(5, alarm.name.length - 2);
+      const tabExists = await chrome.tabs.query({
+        url: meetUrl,
+      });
+      tabExists.forEach((tab) => {
+        chrome.tabs.sendMessage(tab.id, {
+          endMeetMethod: method,
+          url: meetUrl,
+        });
+      });
+    });
+  }
   // @ts-ignore
   // chrome.tabs.create({ url: "https://meet.google.com/?" + alarm.name });
 });
@@ -147,9 +177,15 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   if (regex.test(alarm.name)) {
     chrome.storage.local.get("autoEnd", async (data) => {
       const method = data.autoEnd;
+      const meetUrl = alarm.name.substring(5, alarm.name.length - 2);
       const tabExists = await chrome.tabs.query({
-        url: alarm.name.substring(5, alarm.name.length - 2),
+        url: meetUrl,
       });
+      chrome.runtime.sendMessage({
+        endMeetMethod: method,
+        url: meetUrl,
+      });
+      return;
       if (method != "off" && tabExists?.length > 0) {
         if (method === "call") {
           console.log("Ending call");

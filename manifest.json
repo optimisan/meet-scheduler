@@ -3,7 +3,8 @@
   "version": "0.1",
   "description": "An extension to start meetings automatically",
   "manifest_version": 3,
-  "permissions": ["storage", "alarms", "tabs"],
+  "icons": { "48": "icon48.png" },
+  "permissions": ["storage", "alarms", "tabs", "notifications"],
   "background": {
     "service_worker": "background.js"
   },
@@ -16,7 +17,11 @@
     {
       "matches": ["https://meet.google.com/*"],
       "css": ["google-meet.css"],
-      "js": ["meet_script.js"]
+      "js": ["meet_script.js", "endCall-script.js"]
+    },
+    {
+      "matches": ["https://*/*"],
+      "js": ["endCall-script.js"]
     }
   ],
   "web_accessible_resources": [

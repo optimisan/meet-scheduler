@@ -9,6 +9,13 @@ body {
 nav .brand-logo {
   margin-left: 15px;
 }
+span.badge {
+  font-size: 1rem !important;
+  height: 23px;
+}
+section {
+  margin-bottom: 30px;
+}
 .tab {
   transition: 0.4s !important;
 }

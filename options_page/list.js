@@ -104,6 +104,7 @@ function displaySubjects(subjects) {
     <div class="card ${subject.color} ${subject.disabled}">
       <div class="card-content">
       <span class="new badge" data-badge-caption="">${subject.upcomingTime()}</span>
+      ${subject.duration}
         <span class="card-title">${subject.name}</span>
         <div class='days-display'>${subject.getAllTimes()}</div>
       </div>
@@ -196,12 +197,16 @@ Number.prototype.fromMidnightToTime = function () {
   const minutes = Math.floor(+this % 60);
   return `${hours % 12}:${minutes} ${x}`;
 };
+
+// Pre fill edit modal onclick
 function fillEditModal(subjectName) {
   document.getElementById("create_subject_button").innerText = "EDIT";
   chrome.storage.local.get(subjectName, (data) => {
     const subject = data[subjectName];
     document.getElementById("subject_name").value = subjectName;
     document.getElementById("meet_url").value = subject.meetUrl;
+    console.log("Meet duration", subject.duration);
+    document.getElementById("meet_duration").value = subject.duration;
     let allTimesSame = -2,
       theSameTime,
       timeIndexes = [];
