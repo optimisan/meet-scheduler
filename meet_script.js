@@ -49,7 +49,7 @@ function executeJoin(autoJoin, showQuickMessage) {
           console.log(e);
         }
       }
-    }, 300);
+    }, 2000);
   }
 }
 
@@ -65,19 +65,19 @@ function _showError(message) {
  */
 function prepareToJoin() {
   try {
-    document.querySelector('div[aria-label^="Turn off microphone ("').click();
-    document.querySelector('div[aria-label^="Turn off camera ("').click();
+    document.querySelector('div[aria-label^="Turn off microphone ("]').click();
+    document.querySelector('div[aria-label^="Turn off camera ("]').click();
   } catch (e) {
     (
-      document.querySelector('div[aria-label="Turn off camera (CTRL + E)"') ||
-      document.querySelector('div[aria-label="Turn off camera (ctrl + e)"')
-    )?.click();
+      document.querySelector('div[aria-label="Turn off camera (CTRL + E)"]') ||
+      document.querySelector('div[aria-label="Turn off camera (ctrl + e)"]')
+    ).click();
     (
       document.querySelector(
-        'div[aria-label="Turn off microphone (CTRL + D)"'
+        'div[aria-label="Turn off microphone (CTRL + D)"]'
       ) ||
-      document.querySelector('div[aria-label="Turn off microphone (ctrl + d)"')
-    )?.click();
+      document.querySelector('div[aria-label="Turn off microphone (ctrl + d)"]')
+    ).click();
   }
 }
 function joinMeeting() {

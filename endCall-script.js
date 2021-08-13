@@ -1,8 +1,9 @@
-// console.log("End call script");
+console.log("End call script");
 chrome.runtime.onMessage.addListener(function (req, sender, response) {
   if (req.url !== location) {
     response({ notThisTab: "hmm" });
   }
+  console.log(req);
   if (req.endMeetMethod === "call") {
     if (document.getElementById("send-message-google-meet"))
       document.getElementById("send-message-google-meet").style.display =

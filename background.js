@@ -25,7 +25,7 @@ function sendNotification(request) {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log(request);
   if (request.closeTab) {
-    sendNotification(request);
+    sendNotification({ message: "Meeting " + sender.tab.url + " was closed" });
     return chrome.tabs.remove(sender.tab.id);
   }
   if (request.sendNotification) {
@@ -74,6 +74,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   if (regex.test(alarm.name)) {
     chrome.storage.local.get("autoEnd", async (data) => {
       const method = data.autoEnd;
+      console.log(method);
       const meetUrl = alarm.name.substring(5, alarm.name.length - 2);
       const tabExists = await chrome.tabs.query({
         url: meetUrl,

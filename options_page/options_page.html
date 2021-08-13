@@ -145,7 +145,7 @@
       <p>Press the plus icon button to add a new meeting. Meeting names (subjects) must be <strong>unique</strong>.
         Add the meeting link or the Google Meet code (xxx-yyyy-zzz) and choose your days and times</p>
       <blockquote>All meetings are assumed to repeat weekly</blockquote>
-      <p>Chooing times: </p>
+      <p>Choosing times: </p>
       <h4>Repeat</h4>
       <p>Select the days and set the time below. This will open the meeting on the same time for the selected days</p>
       <p>Ex. Mon, Wed, Fri 3:00 PM</p>
@@ -256,7 +256,7 @@
         <div class="row">
           <div class="input-field col s12">
             <input id="subject_name" type="text" class="validate">
-            <label for="subject_name">Subject Name</label>
+            <label for="subject_name">Subject(Meeting) Name</label>
             <span class="helper-text" data-error="Subject already exists">Subject names must be unique</span>
           </div>
         </div>
@@ -269,12 +269,12 @@
           </div>
         </div>
         <h5>Meeting Duration <span style="font-size: 17px">(in minutes)</span></h5>
-        <p>Meeting will be automatically closed after this duration. Leave as 0 to not auto close</p>
+        <p>Meeting will be automatically closed after this duration. Leave blank to not auto close</p>
         <div class="row">
           <div class="input-field col s12">
-            <input id="meet_duration" type="number" class="validate" min="0">
+            <input id="meet_duration" type="number" class="validate" min="1">
             <label for="meet_duration">Meeting Duration in minutes</label>
-            <span class="helper-text" data-error="Invalid format">To set the auto close method, go to <a href=""
+            <span class="helper-text" data-error="Must be greater than 5">To set the auto close method, go to <a href=""
                 class="side_tab modal-close" data-tab="settings">settings</a></span>
           </div>
         </div>
