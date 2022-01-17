@@ -2,7 +2,7 @@ console.log("In background");
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
     // chrome.runtime.setUninstallURL('https://example.com/extension-survey');
-    chrome.storage.local.set({
+    chrome.storage.sync.set({
       autoJoin: true,
       autoEnd: true,
       showQuickMessage: true,
@@ -37,13 +37,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (!request.disabled) {
     _createAlarm(times, name);
   }
-  sendResponse({ message: "Done", status: "success" });
+  setTimeout(() => {
+    sendResponse({ message: "Done", status: "success" });
+  }, 500);
+  return true;
 });
 // @ts-ignore
 chrome.alarms.onAlarm.addListener((alarm) => {
   console.log(alarm.name);
 
-  chrome.storage.local.get(alarm.name, async (subject) => {
+  chrome.storage.sync.get(alarm.name, async (subject) => {
     // console.log(subject[alarm.name]);
     if (subject[alarm.name]) {
       // Open the meeting
@@ -51,7 +54,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         url: subject[alarm.name].meetUrl,
       });
       // Auto join and quick message script
-      chrome.storage.local.set({
+      chrome.storage.sync.set({
         [subject[alarm.name].meetUrl]: true,
       });
       chrome.runtime.sendMessage({ meetUrl: subject[alarm.name].meetUrl });
@@ -72,7 +75,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   });
   const regex = /end__.+__/gi;
   if (regex.test(alarm.name)) {
-    chrome.storage.local.get("autoEnd", async (data) => {
+    chrome.storage.sync.get("autoEnd", async (data) => {
       const method = data.autoEnd;
       console.log(method);
       const meetUrl = alarm.name.substring(5, alarm.name.length - 2);
@@ -176,7 +179,7 @@ function _createAlarm(times, subjectName) {
 chrome.alarms.onAlarm.addListener((alarm) => {
   const regex = /end__.+__/gi;
   if (regex.test(alarm.name)) {
-    chrome.storage.local.get("autoEnd", async (data) => {
+    chrome.storage.sync.get("autoEnd", async (data) => {
       const method = data.autoEnd;
       const meetUrl = alarm.name.substring(5, alarm.name.length - 2);
       const tabExists = await chrome.tabs.query({
@@ -205,7 +208,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
             //TODO: Send message with endCall = true
             // then sendResponse from content script
             // here where we have remove(sender.tab.id)
-            chrome.storage.local.get(url, (s) => {
+            chrome.storage.sync.get(url, (s) => {
               if (s[url]) {
                 chrome.tabs.remove(tab[0].id);
               }
@@ -231,6 +234,46 @@ function _createEndCallAlarm(url, duration) {
     });
   }
 }
-// chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-//   console.log(request);
-// });
+chrome.runtime.onMessageExternal.addListener(
+  function (request, sender, sendResponse) {
+    if (request) {
+      if (request.fromShare) {
+        chrome.storage.sync.get(null, (d) => {
+          delete d.autoJoin;
+          delete d.showQuickMessage;
+          delete d.autoEnd;
+          sendResponse(d);
+        })
+      } else if (request.openOptions) {
+        chrome.runtime.openOptionsPage(() => {
+        });
+      }
+      if (request.save) {
+        if (request.data) {
+          try {
+            chrome.storage.sync.set(request.data);
+            chrome.alarms.clearAll(() => {
+              chrome.storage.sync.get(null, (data) => {
+                console.log(data);
+                for (const s in data) {
+                  console.log(s);
+                  if (data[s]?.daysWithTimes)
+                    _createAlarm(data[s].daysWithTimes, s);
+                }
+                // for (let name in Object.keys(data)) {
+                //   console.log(data[name]);
+                //   if (data[name]?.daysWithTimes)
+                //     _createAlarm(data[name].daysWithTimes, name);
+                // }
+              })
+            })
+            sendResponse({ saved: true });
+          }
+          catch (e) {
+            sendResponse({ saved: false });
+          }
+        }
+      }
+    }
+    return true;
+  });

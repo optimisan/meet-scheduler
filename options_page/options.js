@@ -11,11 +11,11 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   // clear fields when user cancels modal
   document
-    .getElementsByClassName("modal-close")[0]
+    .getElementById("cancel-subject-modal")
     .addEventListener("click", clearFields);
 
   /////////// Switch tabs
-  chrome.storage.local.get("firstLoad", (data) => {
+  chrome.storage.sync.get("firstLoad", (data) => {
     const firstLoad = data.firstLoad;
     if (firstLoad) {
       document.querySelectorAll(".side_tab").forEach((tab) => {
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.querySelector('li[data-tab="about"]').classList.add("active");
       document.getElementById("about")?.classList.add("tab-active");
     }
-    chrome.storage.local.remove("firstLoad");
+    chrome.storage.sync.remove("firstLoad");
   });
   for (const tab of document.querySelectorAll(".side_tab")) {
     // const tab_id = tab.getElementsByClassName("a")[0].href;
@@ -50,12 +50,10 @@ document.addEventListener("DOMContentLoaded", function () {
 ////////////Tabs end
 
 document.querySelectorAll(".day-chip").forEach((day) => {
-  console.log("hey 1");
   day.addEventListener("click", () => {
-    console.log(day["data-selected"]);
     day.setAttribute(
       "data-selected",
-      (day.getAttribute("data-selected") == "true" ? false : true).toString()
+      (day.getAttribute("data-selected") == "true" ? "false" : "true")
     );
   });
 });
@@ -66,7 +64,7 @@ document.querySelectorAll(".day-chip").forEach((day) => {
 // https://stackoverflow.com/questions/1759987/listening-for-variable-changes-in-javascript
 var customSelected = {
   theValue: false,
-  aListener: function (val) {},
+  aListener: function (val) { },
   set value(val) {
     this.theValue = val;
     this.aListener(val);
@@ -163,13 +161,13 @@ function handleCreateSubject(cb) {
       duration,
     };
     // check if subject exists
-    chrome.storage.local.get(name, function (data) {
+    chrome.storage.sync.get(name, function (data) {
       console.log("data", data);
       const buttonType = document.getElementById(
         "create_subject_button"
       ).innerText;
       if (typeof data[name] === "undefined") {
-        chrome.storage.local.set(
+        chrome.storage.sync.set(
           {
             [name]: subject, // computed property
           },
@@ -181,7 +179,7 @@ function handleCreateSubject(cb) {
         );
       } else {
         if (buttonType === "EDIT") {
-          chrome.storage.local.set(
+          chrome.storage.sync.set(
             {
               [name]: subject, // computed property
             },
@@ -307,7 +305,7 @@ function clearFields() {
     ...document.getElementsByClassName("form")[0].getElementsByTagName("input"),
   ].forEach((ele) => (ele.value = ""));
   document.getElementById("create_subject_button").innerText = "CREATE";
-  [...document.getElementsByClassName("custom-times")].forEach((ele) =>
+  [...document.getElementsByClassName("custom-times"), ...document.getElementsByClassName("day-chip")].forEach((ele) =>
     ele.setAttribute("data-selected", "false")
   );
 }

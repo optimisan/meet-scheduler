@@ -294,6 +294,12 @@ button.edit-button:hover {
 button.edit-button:hover i {
   color: rgb(139, 192, 189);
 }
+button.share-button:hover {
+  background-color: #7557d4;
+}
+button.share-button:hover i {
+  color: rgb(139, 192, 189);
+}
 .gh {
   width: 20px;
   height: 20px;
@@ -314,4 +320,10 @@ div.flex {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+}
+code,
+pre {
+  background-color: #d6e7e4;
+  color: #116969;
+  padding: 8px 16px;
 }

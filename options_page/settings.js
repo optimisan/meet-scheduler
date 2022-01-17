@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("turn-off").addEventListener("click", () => {
-    chrome.storage.local.get(null, async (s) => {
+    chrome.storage.sync.get(null, async (s) => {
       for (const subjectName in s) {
         if (s[subjectName].daysWithTimes) {
-          chrome.storage.local.set({
+          chrome.storage.sync.set({
             [subjectName]: { ...s[subjectName], disabled: true },
           });
         }
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setValues();
 
   document.getElementById("delete_all").addEventListener("click", async () => {
-    chrome.storage.local.clear();
+    chrome.storage.sync.clear();
     await chrome.alarms.clearAll();
     M.toast({ html: "Deleted all meetings", classes: "red" });
   });
@@ -30,26 +30,26 @@ document.addEventListener("DOMContentLoaded", () => {
   // Turn on Auto join
   document.getElementById("auto_join_meet").addEventListener("change", (e) => {
     // localStorage.setItem("autoJoin", e.target.checked);
-    chrome.storage.local.set({ autoJoin: e.target.checked });
+    chrome.storage.sync.set({ autoJoin: e.target.checked });
   });
   document
     .getElementById("auto_end_meet")
     .addEventListener("change", function () {
       // localStorage.setItem("autoEnd", this.value);
-      chrome.storage.local.set({ autoEnd: this.value });
+      chrome.storage.sync.set({ autoEnd: this.value });
     });
 
   document
     .getElementById("show_quick_message")
     .addEventListener("change", (e) => {
       // localStorage.setItem("showQuickMessage", e.target.checked);
-      chrome.storage.local.set({ showQuickMessage: e.target.checked });
+      chrome.storage.sync.set({ showQuickMessage: e.target.checked });
     });
 });
 function saveQuickMessage(e) {
   const message = e.target.value;
   // localStorage.setItem("quickMessage", message);
-  chrome.storage.local.set({ quickMessage: message });
+  chrome.storage.sync.set({ quickMessage: message });
 }
 function debounce(funcToExecute, period) {
   let timeout;
@@ -63,7 +63,7 @@ function debounce(funcToExecute, period) {
   };
 }
 function setValues() {
-  chrome.storage.local.get(null, (localStorage) => {
+  chrome.storage.sync.get(null, (localStorage) => {
     document.getElementById("auto_end_meet").value =
       localStorage.autoEnd ?? "off";
     M.FormSelect.init(document.getElementById("auto_end_meet"), {});

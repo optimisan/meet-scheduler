@@ -11,7 +11,7 @@ if (location.pathname !== "/") {
 console.log(location.toString());
 
 setTimeout(() => {
-  chrome.storage.local.get(null, (s) => {
+  chrome.storage.sync.get(null, (s) => {
     let executeScript = false;
     for (const subjectName in s) {
       console.log(s[subjectName]);
@@ -120,9 +120,9 @@ function addButton(showQuickMessage) {
 
 function sendIntroMessage() {
   const self = this;
-  chrome.storage.local.get("showQuickMessage", (s) => {
+  chrome.storage.sync.get("showQuickMessage", (s) => {
     if (s.showQuickMessage)
-      chrome.storage.local.get("quickMessage", (m) => {
+      chrome.storage.sync.get("quickMessage", (m) => {
         const message = m["quickMessage"] ?? "Good day";
         function sendIt() {
           document.querySelector(

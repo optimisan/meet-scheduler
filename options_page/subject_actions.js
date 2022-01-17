@@ -81,8 +81,8 @@ function Subject(subject, name) {
         console.log("Minutes ", minutesAfterNowTillFirstAlarm);
         return asString
           ? minutesAfterNowTillFirstAlarm.timeToString({
-              fromMidnight: this.times[day],
-            })
+            fromMidnight: this.times[day],
+          })
           : minutesAfterNowTillFirstAlarm;
       } else continue;
     }
@@ -102,10 +102,10 @@ function initializeDisableSubjects() {
  * @param {string} subjectName
  */
 function disableSubject(subjectName) {
-  chrome.storage.local.get(subjectName, (data) => {
+  chrome.storage.sync.get(subjectName, (data) => {
     const subject = data[subjectName];
     let newSubject = { ...subject, disabled: !subject.disabled };
-    chrome.storage.local.set({
+    chrome.storage.sync.set({
       [subjectName]: newSubject,
     });
     chrome.alarms.clear(subjectName);

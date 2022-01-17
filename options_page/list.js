@@ -1,7 +1,7 @@
 "use-strict";
 
 document.addEventListener("DOMContentLoaded", () => {
-  chrome.storage.local.get(null, (s) => {
+  chrome.storage.sync.get(null, (s) => {
     displaySubjects(s);
   });
 });
@@ -95,9 +95,8 @@ function displaySubjects(subjects) {
     // }
     const card = `
 <div class="timeline-item" id="timeline-item-${subject.name}">
-  <div class="timeline-icon ${subject.disabled}" data-subject-name="${
-      subject.name
-    }">
+  <div class="timeline-icon ${subject.disabled}" data-subject-name="${subject.name
+      }">
     <i class="material-icons">${subject.icon}</i>
   </div>
   <div class="timeline-content">
@@ -109,21 +108,18 @@ function displaySubjects(subjects) {
         <div class='days-display'>${subject.getAllTimes()}</div>
       </div>
       <div class="card-action">
-        <a class="waves-effect waves-green ${
-          subject.meetingCode()
-            ? "meeting-code purple white-text"
-            : "normal-url"
-        }" href="${subject.meetUrl}" target="_blank"> ${
-      subject.meetingCode() ?? subject.meetUrl
-    }</a>
+        <a class="waves-effect waves-green ${subject.meetingCode()
+        ? "meeting-code purple white-text"
+        : "normal-url"
+      }" href="${subject.meetUrl}" target="_blank"> ${subject.meetingCode() ?? subject.meetUrl
+      }</a>
         <div>
-
-        <button data-target="create-subject-modal" class="edit-button white-text waves-effect modal-trigger waves-teal" data-subject-name="${
-          subject.name
-        }"><i class="material-icons">edit</i></button>
-        <button class="delete-button red-text waves-effect waves-red" data-subject-name="${
-          subject.name
-        }"><i class="material-icons">delete</i></button>
+        <button data-target="share-subject-modal" class="share-button blue-text waves-effect modal-trigger waves-teal" data-subject-name="${subject.name}">
+        <i class="material-icons">share</i></button>
+        <button data-target="create-subject-modal" class="edit-button white-text waves-effect modal-trigger waves-teal" data-subject-name="${subject.name
+      }"><i class="material-icons">edit</i></button>
+        <button class="delete-button red-text waves-effect waves-red" data-subject-name="${subject.name
+      }"><i class="material-icons">delete</i></button>
         </div>
       </div>
     </div>
@@ -145,9 +141,19 @@ function displaySubjects(subjects) {
 }
 
 /**
- * Edit and delete buttons
+ * Share, edit and delete buttons
  */
 function initializeActionButtons() {
+  //Share button
+  document.querySelectorAll(".share-button").forEach(button => {
+    button.addEventListener("click", () => {
+      const name = button.getAttribute("data-subject-name");
+      chrome.storage.sync.get(name, (data) => {
+        document.getElementById("share-sub-name").innerText = name;
+        document.getElementById("share-sub-content").innerText = JSON.stringify(data, null, 2);
+      })
+    })
+  })
   // Delete buttons
   document.querySelectorAll(".delete-button").forEach((button) => {
     button.addEventListener("click", () => {
@@ -161,7 +167,7 @@ function initializeActionButtons() {
         chrome.alarms
           .clear(name)
           .then((val) => {
-            chrome.storage.local.remove(name, (message) => {
+            chrome.storage.sync.remove(name, (message) => {
               console.log(message);
             });
           })
@@ -201,7 +207,7 @@ Number.prototype.fromMidnightToTime = function () {
 // Pre fill edit modal onclick
 function fillEditModal(subjectName) {
   document.getElementById("create_subject_button").innerText = "EDIT";
-  chrome.storage.local.get(subjectName, (data) => {
+  chrome.storage.sync.get(subjectName, (data) => {
     const subject = data[subjectName];
     document.getElementById("subject_name").value = subjectName;
     document.getElementById("meet_url").value = subject.meetUrl;
@@ -231,7 +237,7 @@ function fillEditModal(subjectName) {
       timeIndexes.forEach((i) => {
         document
           .querySelectorAll(".days .day-chip")
-          [i].setAttribute("data-selected", "true");
+        [i].setAttribute("data-selected", "true");
       });
       document.getElementById("repeat-time").value =
         theSameTime.fromMidnightToTime();
@@ -240,7 +246,7 @@ function fillEditModal(subjectName) {
   });
 }
 chrome.storage.onChanged.addListener((changes, platform) => {
-  chrome.storage.local.get(null, (s) => {
+  chrome.storage.sync.get(null, (s) => {
     displaySubjects(s);
   });
 });
