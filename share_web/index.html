@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google Icons -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Meetimely x Jeenius</title>
+    <style>
+      body {
+        padding: 0 !important;
+        margin: 0 0 10px 8px !important;
+      }
+      h1 {
+        margin: 0 !important;
+        padding: 0;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-right: 15px;
+      }
+      p.intro {
+        font-size: 18px;
+      }
+      #schedule-cards {
+        display: flex;
+        justify-content: space-around;
+      }
+      .card {
+        width: 600px;
+        margin: 30px;
+      }
+      h1:after {
+        content: "x Jeenius";
+        font-size: 18px;
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1 class="teal-text">Meetimely</h1>
+      <button id="get-subjects" class="btn" onclick="openMeetimely()">
+        Open Meetimely
+      </button>
+    </header>
+    <!-- <p class="intro">
+      If you haven't installed Meetimely,
+      <a
+        href="https://chrome.google.com/webstore/detail/meet-scheduler/aenhmmfelkmdlihmaiblnhdmfopmbonc?hl=en-GB"
+        target="_blank"
+        >click here</a
+      >
+    </p> -->
+    <div class="center-align">
+      <button
+        id="save-button"
+        onclick="saveSubjects()"
+        class="btn btn-large waves-effect"
+      >
+        Save subjects
+      </button>
+    </div>
+    <div class="center-align" id="init">
+      <div class="loader-wrapper" id="schedule-loader">
+        <div class="preloader-wrapper big active">
+          <div class="spinner-layer spinner-blue">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+
+          <div class="spinner-layer spinner-red">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+
+          <div class="spinner-layer spinner-yellow">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+
+          <div class="spinner-layer spinner-green">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="schedule-cards"></div>
+    <div id="message" class="center-align"></div>
+    <div class="modal" id="share-modal">
+      <div class="modal-content">
+        <h4>Subjects saved successfully!</h4>
+        <p>You can share the link given below:</p>
+        <code id="link">link is here</code>
+      </div>
+    </div>
+    <script>
+      // const id = "aenhmmfelkmdlihmaiblnhdmfopmbonc";
+      const id = "jdefgnfbjheccflilfkbjmieohkpjcfi";
+      let meetimelyIsInstalled = false;
+      let data = {};
+      let username = localStorage.usernameMEET;
+      function saveSubjects() {
+        if (!username) username = window.prompt("Enter your name:");
+        if (username == null) {
+          return M.toast({ html: "A name is required.", classes: "red" });
+        }
+        username = username.trim();
+        if (username == "username" || username == "") {
+          return M.toast({
+            html: `"${username}" is not allowed as a username`,
+            classes: "red",
+          });
+        }
+        if (Object.keys(data).length === 0) {
+          return M.toast({ html: "Cannot save zero subjects", classes: "red" });
+        }
+        var xhr = new XMLHttpRequest();
+        var url = "/meetimely/saveMeet.php";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var text = xhr.responseText;
+            if (text !== "failed") {
+              document.getElementById("link").innerText = text;
+              M.Modal.getInstance(
+                document.getElementById("share-modal")
+              ).open();
+            } else {
+              M.toast({ html: "Failed to save" });
+            }
+          } else if (xhr.readyState === 4) {
+            M.toast({ html: "Failed to save", classes: "red" });
+          }
+        };
+        // M.Modal.getInstance(document.getElementById("share-modal")).open();
+        var sendData = JSON.stringify({ [username]: data, username });
+        try {
+          xhr.send(sendData);
+        } catch (e) {
+          M.toast({ html: "Failed to save" });
+        }
+      }
+      function openMeetimely() {
+        try {
+          chrome.runtime.sendMessage(id, { openOptions: true }, (res) => {
+            if (chrome.runtime.lastError) {
+              window.open(
+                "https://chrome.google.com/webstore/detail/meet-scheduler/aenhmmfelkmdlihmaiblnhdmfopmbonc?hl=en-GB",
+                "_blank"
+              );
+            }
+          });
+        } catch (e) {
+          window.open(
+            "https://chrome.google.com/webstore/detail/meet-scheduler/aenhmmfelkmdlihmaiblnhdmfopmbonc?hl=en-GB",
+            "_blank"
+          );
+        }
+      }
+      document.addEventListener("DOMContentLoaded", (e) => {
+        M.Modal.init(document.querySelectorAll(".modal"));
+        try {
+          chrome.runtime.sendMessage(id, { fromShare: true }, (res) => {
+            if (chrome.runtime.lastError) {
+              meetimelyIsInstalled = false;
+              notInstalledMessage();
+            }
+            if (res) {
+              meetimelyIsInstalled = true;
+              data = extractSubjects(res);
+              displaySubjects(res);
+            }
+          });
+        } catch (e) {
+          meetimelyIsInstalled = false;
+          notInstalledMessage();
+        }
+      });
+      /**
+       * Extracts valid subject entries in json
+       * and returns this new valid json
+       * (removes all other keys)
+       */
+      function extractSubjects(json) {
+        const validJson = {};
+        for (const key in json) {
+          const subject = json[key];
+          console.log(key, json[key]);
+          if (subject.daysWithTimes) {
+            validJson[key] = subject;
+          }
+        }
+        return validJson;
+      }
+      function notInstalledMessage() {
+        document.getElementById("save-button").style.display = "none";
+        const screen = document.getElementById("message");
+        screen.innerHTML = `<h4 class="red-text">Meetimely not installed</h4><p class="intro">To install, <a href="https://chrome.google.com/webstore/detail/meet-scheduler/aenhmmfelkmdlihmaiblnhdmfopmbonc?hl=en-GB">click here</a>`;
+        document.getElementById("schedule-loader").style.display = "none";
+      }
+
+      ////Display subjects
+
+      function displaySubjects(subjects) {
+        const screen = document.getElementById("schedule-cards");
+        screen.innerHTML = "";
+        if (Object.keys(subjects).length === 0) {
+          screen.innerHTML =
+            '<p class="flow-text">You have no meetings yet. Click the "+" icon to add one</p>';
+          document.getElementById("schedule-loader").style.display = "none";
+          return;
+        }
+        const subjectsArray = [];
+        for (const s in subjects) {
+          if (subjects[s].daysWithTimes)
+            subjectsArray.push(new Subject(subjects[s], s));
+        }
+        const sortedSubjects = subjectsArray.sort(
+          (a, b) => a.upcomingTime(false) - b.upcomingTime(false)
+        );
+
+        for (const subject of sortedSubjects) {
+          const card = `
+      <div id="card-${subject.name}" class="card ${subject.color} ${
+            subject.disabled
+          }">
+        <div class="card-content">
+        <span class="new badge" data-badge-caption="">${subject.upcomingTime()}</span>
+        ${subject.duration}
+          <span class="card-title">${subject.name}</span>
+          <div class='days-display'>${subject.getAllTimes()}</div>
+        </div>
+        <div class="card-action">
+          <a class="waves-effect waves-green ${
+            subject.meetingCode()
+              ? "meeting-code purple white-text"
+              : "normal-url"
+          }" href="${subject.meetUrl}" target="_blank"> ${
+            subject.meetingCode() ?? subject.meetUrl
+          }</a>
+          <div>
+            <button class="delete-button red-text waves-effect waves-red" data-subject-name="${
+              subject.name
+            }"><i class="material-icons">delete</i></button>
+          </div>
+        </div>
+      </div>
+      `;
+          screen.innerHTML += card;
+        }
+        if (screen.innerHTML === "") {
+          screen.innerHTML =
+            '<p class="flow-text">You have no meetings yet. <a onclick="openMeetimely()">Add a subject in Meetimely</a></p>';
+        }
+        document.getElementById("schedule-loader").style.display = "none";
+        initializeDelete();
+      }
+      function initializeDelete() {
+        document.querySelectorAll(".delete-button").forEach((button) => {
+          button.addEventListener("click", (e) => {
+            const name = button.getAttribute("data-subject-name");
+            document.getElementById(`card-${name}`).remove();
+            delete data[name];
+          });
+        });
+      }
+
+      /////Subject constructor
+      const todayMidnight = new Date();
+      todayMidnight.setHours(0, 0, 0);
+      function Subject(subject, name) {
+        this.times = subject.daysWithTimes;
+        this.name = name;
+        this.color = getAColor();
+        this.meetUrl = subject.meetUrl;
+        this.disabled = `disabled-${subject.disabled}`;
+        this.icon = subject.disabled ? "clear" : "check";
+        this.duration = subject.duration
+          ? `<span class="new badge blue" data-badge-caption="min">${subject.duration}</span>`
+          : "";
+        this.meetingCode = () => {
+          const url = new URL(this.meetUrl);
+          if (url.hostname == "meet.google.com")
+            return url.pathname.replace("/", "");
+          else return null;
+        };
+        /**
+         * @returns String
+         */
+        this.getAllTimes = () => {
+          let renderedDays = "";
+          this.times.forEach((time, day) => {
+            // day = day.toString();
+            if (time != null) {
+              renderedDays += `
+          <div class="day-chip-display">${day.dayFromIndex()} ${time.timeToString(
+                { short: true }
+              )}</div>
+          `;
+            }
+          });
+          return renderedDays;
+        };
+
+        /**
+         * Get the upcoming time to display
+         */
+        this.upcomingTime = (asString = true) => {
+          // same logic as in _createAlarm in background.js
+
+          /**
+           * Monday = 0
+           * Tuesday = 1 and so on
+           */
+          const today = todayMidnight.getDay() - 1;
+          let correction = today;
+          /**
+           * Loop from today till next week to set the next alarm.
+           */
+          for (
+            let index = today;
+            index <= this.times.length + correction - 1;
+            index++
+          ) {
+            const day = index % this.times.length; //to wrap around
+            // if (index < times.length + correction - 1) break;
+            if (this.times[day] != null) {
+              const daysTillFirstAlarm =
+                today <= day
+                  ? today === day && correction > today
+                    ? 7
+                    : day - today
+                  : 7 + day - today; // (7-today) + day
+              // if(correction > today) daysTillFirstAlarm = 7;
+              const minutesTillFirstAlarmDay = daysTillFirstAlarm * 1440;
+              const minutesAfterTodayMidnightTillFirstAlarm =
+                minutesTillFirstAlarmDay + this.times[day];
+              const minutesAfterNowTillFirstAlarm =
+                minutesAfterTodayMidnightTillFirstAlarm -
+                (Date.now() - todayMidnight.getTime()) / 60000;
+
+              // console.log("Alarm in ", minutesAfterNowTillFirstAlarm);
+
+              if (minutesAfterNowTillFirstAlarm <= 0 && correction === today) {
+                // Increment correction so that this loop reaches this day
+                // the next week
+                correction++;
+                continue;
+              }
+              console.log("Minutes ", minutesAfterNowTillFirstAlarm);
+              return asString
+                ? minutesAfterNowTillFirstAlarm.timeToString({
+                    fromMidnight: this.times[day],
+                  })
+                : minutesAfterNowTillFirstAlarm;
+            } else continue;
+          }
+        };
+      }
+      /**
+       * Get a random color
+       */
+      const getAColor = () =>
+        ["purple", "green", "yellow", "blue"][Math.floor(Math.random() * 4)];
+      Number.prototype.dayFromIndex = function () {
+        // !!Do not use arrow function
+        // otherwise "this" will refer to the
+        // global window object !!
+        //
+        // console.log(this[0]); //no idea
+        // when this was String.prototype... this[0]
+        // was to be used in switch (instead of `this`)
+        const num = +this; // convert to primitive
+        switch (num) {
+          case 0:
+            return "Mon";
+          case 1:
+            return "Tue";
+          case 2:
+            return "Wed";
+          case 3:
+            return "Thu";
+          case 4:
+            return "Fri";
+          case 5:
+            return "Sat";
+          default:
+            return "Day"; // uh oh
+        }
+      };
+      Number.prototype.fromMidnightToTime = function () {
+        const hours = Math.floor(+this / 60);
+        const x = hours >= 12 ? "PM" : "AM";
+        const minutes = Math.floor(+this % 60);
+        return `${hours % 12}:${minutes} ${x}`;
+      };
+      Number.prototype.timeToString = function ({
+        short = false,
+        fromMidnight = 0,
+      }) {
+        console.log("Time is ", +this);
+
+        const time = (Date.now() - todayMidnight.getTime()) / 60000 + +this;
+
+        if (time < 60) {
+          return short
+            ? `0:${Math.floor(this)}`
+            : `In ${Math.floor(this)} minutes`;
+        } else if (+this < 1440 || time < 1440) {
+          return short
+            ? `${Math.floor(+this / 60)}:${Math.floor(+this % 60)}`
+            : `In ${Math.floor(+this / 60)} hours ${Math.floor(
+                +this % 60
+              )} minutes`;
+        } else if (time < 2880) {
+          // const tom = time - 1440;
+          console.log(time);
+          return `Tomorrow at ${Math.floor(fromMidnight / 60)}:${Math.floor(
+            fromMidnight % 60
+          )}`;
+        } else {
+          // const daysTime = time % 1440;
+          return `In ${Math.floor(time / 1440)} days`;
+        }
+      };
+    </script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  </body>
+</html>

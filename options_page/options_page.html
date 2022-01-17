@@ -86,11 +86,11 @@
           ><i class="material-icons teal-text">settings</i>Settings</a
         >
       </li>
-      <!-- <li data-tab="schedule">
-        <a href="#!" class="waves-effect"
+      <li data-tab="schedule">
+        <a href="#import-subject" class="modal-trigger waves-effect"
           ><i class="material-icons teal-text">download</i>Import from JSON</a
         >
-      </li> -->
+      </li>
       <li class="" data-tab="schedule">
         <a
           target="_blank"
@@ -290,6 +290,50 @@
                 >
               </div>
             </div>
+            <div class="divider"></div>
+            <!-- Join early -->
+            <h4>Open ahead of scheduled time</h4>
+            <p style="margin-top: -5px">
+              Setting 5 means a meeting at 11am will open at 10:50am instead.
+              <span class="red-text" style="font-size: 15px"
+                >This will take effect from the next-to-next meetings</span
+              >
+            </p>
+
+            <div class="row">
+              <div class="input-field col s10">
+                <i class="material-icons prefix">history</i>
+                <input
+                  id="time-ahead"
+                  type="number"
+                  min="1"
+                  max="10"
+                  class="validate"
+                />
+                <label for="time-ahead">Minutes ahead of time</label>
+                <span
+                  class="helper-text"
+                  data-error="Keep it less than 10 ideally"
+                  >Opens the link these many minutes before the time specified
+                  in the subject</span
+                >
+              </div>
+              <!-- <div class="input-field col s12">
+                <input
+                  id="min-ahead"
+                  min="1"
+                  max="10"
+                  type="number"
+                  class="materialize-textarea"
+                />
+                <label for="min-ahead">How many minutes early to open?</label>
+                <span class="helper-text"
+                  >Opens the link these many minutes before the time specified
+                  in the subject</span
+                >
+              </div> -->
+            </div>
+            <!-- --------- -->
             <div class="divider"></div>
             <h4>Quick Message</h4>
             <div class="row flex">
@@ -512,7 +556,7 @@ John Doe, 2020CDOK321X</textarea
       </div>
     </div>
     <!-- Share Subject Modal -->
-    <div class="modal" id="share-subject-modal">
+    <div class="modal modal-fixed-footer" id="share-subject-modal">
       <div class="modal-content">
         <h4>Share <span id="share-sub-name" class="teal-text">DSA L1</span></h4>
         <p>Copy this JSON and share</p>
@@ -523,6 +567,32 @@ John Doe, 2020CDOK321X</textarea
       </div>
       <div class="modal-footer"></div>
     </div>
+    <div id="import-subject" class="modal modal-fixed-footer">
+      <div class="modal-content">
+        <h4 class="teal-text">Import subject</h4>
+        <div class="row">
+          <div class="input-field col s12">
+            <textarea id="json-import" class="materialize-textarea"></textarea>
+            <label for="json-import">Paste your JSON here</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          href="#!"
+          id="import-button"
+          class="modal-close waves-effect waves-green btn-flat teal-text"
+        >
+          Import
+        </button>
+        <a
+          href="#!"
+          id="cancel-subject-modal"
+          class="modal-close waves-effect waves-red red-text btn-flat"
+          >Cancel</a
+        >
+      </div>
+    </div>
 
     <!-- Compiled and minified JavaScript -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
@@ -531,6 +601,7 @@ John Doe, 2020CDOK321X</textarea
     <script src="./create_alarm.js"></script>
     <script src="./options.js"></script>
     <script src="./list.js"></script>
+    <script src="./share.js"></script>
     <script src="./settings.js"></script>
   </body>
 </html>

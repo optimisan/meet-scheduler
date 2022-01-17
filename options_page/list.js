@@ -207,6 +207,7 @@ Number.prototype.fromMidnightToTime = function () {
 // Pre fill edit modal onclick
 function fillEditModal(subjectName) {
   document.getElementById("create_subject_button").innerText = "EDIT";
+  document.getElementById("subject_name").disabled = true;
   chrome.storage.sync.get(subjectName, (data) => {
     const subject = data[subjectName];
     document.getElementById("subject_name").value = subjectName;

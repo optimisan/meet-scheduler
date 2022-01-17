@@ -108,6 +108,7 @@ function checkDayMode() {
 
 document.getElementById("add-subject-button").addEventListener("click", (e) => {
   e.currentTarget.classList.remove("pulse");
+  clearFields();
 });
 
 //Create subject

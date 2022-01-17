@@ -1,0 +1,468 @@
+<?php
+if(!isset($_REQUEST["n"])){
+    header('Location: http://jeenius.gq/meetimely');
+}
+$username = $_REQUEST["n"];
+$user_exists = false;
+$json_file = file_get_contents('stored.json');
+// Decode the JSON file
+$json = json_decode($json_file,true);
+$data = $json;
+if(isset($json[$username])){
+    $user_exists = true;
+    $data = json_encode($json[$username]);
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google Icons -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Meetimely x Jeenius</title>
+    <style>
+      body {
+        padding: 0 !important;
+        margin: 0 0 10px 8px !important;
+      }
+      h1 {
+        margin: 0 !important;
+        padding: 0;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-right: 15px;
+      }
+      p.intro {
+        font-size: 18px;
+      }
+      #schedule-cards {
+        display: flex;
+        justify-content: space-around;
+      }
+      .card {
+        width: 600px;
+        margin: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1 class="teal-text">Meetimely</h1>
+      <button id="get-subjects" class="btn" onclick="openMeetimely()">
+        Open Meetimely
+      </button>
+    </header>
+    <!-- <p class="intro">
+      If you haven't installed Meetimely,
+      <a
+        href="https://chrome.google.com/webstore/detail/meet-scheduler/aenhmmfelkmdlihmaiblnhdmfopmbonc?hl=en-GB"
+        target="_blank"
+        >click here</a
+      >
+    </p> -->
+    <?php
+    if($user_exists){
+    ?>
+    <div id="import-div" class="center-align">
+      <button
+        id="save-button"
+        onclick="saveSubjects()"
+        class="btn btn-large waves-effect"
+      >
+        Import subjects
+      </button>
+      <p class="red-text intro">
+        Your existing subjects will be overwritten if they have the same name
+      </p>
+    </div>
+    <div
+      style="width: 70%; height: 1px; background: #00000077; margin: 6px auto"
+    ></div>
+    <p class="center-align">
+      Showing subjects saved by
+      <kbd class="teal-text"><?php echo $username;?></kbd>
+    </p>
+    <?php
+    } else {
+    ?>
+    <div class="red-text">
+      The shared content seems to have been deleted, or never existed in the
+      first place.
+    </div>
+    <p>
+      You might want to check the link again, or
+      <a href="/meetimely"> share your meetings</a>
+    </p>
+    <?php
+    }
+    ?>
+    <div class="center-align" id="init">
+      <div class="loader-wrapper" id="schedule-loader">
+        <div class="preloader-wrapper big active">
+          <div class="spinner-layer spinner-blue">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+
+          <div class="spinner-layer spinner-red">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+
+          <div class="spinner-layer spinner-yellow">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+
+          <div class="spinner-layer spinner-green">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="schedule-cards"></div>
+    <div id="message" class="center-align"></div>
+    <div class="modal" id="share-modal">
+      <div class="modal-content">
+        <h4>Subjects saved successfully!</h4>
+        <p>Subjects have been imported into Meetimely.</p>
+      </div>
+    </div>
+    <script>
+      // const id = "aenhmmfelkmdlihmaiblnhdmfopmbonc";
+      const id = "jdefgnfbjheccflilfkbjmieohkpjcfi";
+      let meetimelyIsInstalled = false;
+      let data = "<?php echo $data; ?>";
+      const jsonData = JSON.parse(data);
+      let username = localStorage.usernameMEET;
+      function saveSubjects() {
+        chrome.runtime.sendMessage(
+          id,
+          { save: true, data: jsonData },
+          (res) => {
+            M.Modal.getInstance(document.getElementById("share-modal")).open();
+          }
+        );
+      }
+      function openMeetimely() {
+        try {
+          chrome.runtime.sendMessage(id, { openOptions: true }, (res) => {
+            if (chrome.runtime.lastError) {
+              window.open(
+                "https://chrome.google.com/webstore/detail/meet-scheduler/aenhmmfelkmdlihmaiblnhdmfopmbonc?hl=en-GB",
+                "_blank"
+              );
+            }
+          });
+        } catch (e) {
+          window.open(
+            "https://chrome.google.com/webstore/detail/meet-scheduler/aenhmmfelkmdlihmaiblnhdmfopmbonc?hl=en-GB",
+            "_blank"
+          );
+        }
+      }
+      document.addEventListener("DOMContentLoaded", (e) => {
+        M.Modal.init(document.querySelectorAll(".modal"));
+        // Display saved subjects
+        if (data) {
+          let json = JSON.parse(data);
+          displaySubjects(json);
+        }
+        // Determine if Meetimely whether installed
+        try {
+          chrome.runtime.sendMessage(id, { fromShare: true }, (res) => {
+            if (chrome.runtime.lastError) {
+              meetimelyIsInstalled = false;
+              notInstalledMessage();
+            }
+            if (res) {
+              meetimelyIsInstalled = true;
+            }
+          });
+        } catch (e) {
+          meetimelyIsInstalled = false;
+          notInstalledMessage();
+        }
+      });
+      function notInstalledMessage() {
+        document.getElementById("save-button").style.display = "none";
+        // document.getElementById("import-div").innerHTML = ""
+        const screen = document.getElementById("import-div");
+        screen.innerHTML = `<h4 class="red-text">Meetimely not installed</h4><p class="intro">To install, <a target = "_blank" href="https://chrome.google.com/webstore/detail/meet-scheduler/aenhmmfelkmdlihmaiblnhdmfopmbonc?hl=en-GB">click here</a>`;
+        document.getElementById("schedule-loader").style.display = "none";
+      }
+
+      ////Display subjects
+
+      function displaySubjects(subjects) {
+        const screen = document.getElementById("schedule-cards");
+        screen.innerHTML = "";
+        if (Object.keys(subjects).length === 0) {
+          screen.innerHTML =
+            '<p class="flow-text">You have no meetings yet. Click the "+" icon to add one</p>';
+          document.getElementById("schedule-loader").style.display = "none";
+          return;
+        }
+        const subjectsArray = [];
+        for (const s in subjects) {
+          if (subjects[s].daysWithTimes)
+            subjectsArray.push(new Subject(subjects[s], s));
+        }
+        const sortedSubjects = subjectsArray.sort(
+          (a, b) => a.upcomingTime(false) - b.upcomingTime(false)
+        );
+
+        for (const subject of sortedSubjects) {
+          const card = `
+      <div id="card-${subject.name}" class="card ${subject.color} ${
+            subject.disabled
+          }">
+        <div class="card-content">
+        <span class="new badge" data-badge-caption="">${subject.upcomingTime()}</span>
+        ${subject.duration}
+          <span class="card-title">${subject.name}</span>
+          <div class='days-display'>${subject.getAllTimes()}</div>
+        </div>
+        <div class="card-action">
+          <a class="waves-effect waves-green ${
+            subject.meetingCode()
+              ? "meeting-code purple white-text"
+              : "normal-url"
+          }" href="${subject.meetUrl}" target="_blank"> ${
+            subject.meetingCode() ?? subject.meetUrl
+          }</a>
+          <div><button class="delete-button red-text waves-effect waves-red" data-subject-name="${
+            subject.name
+          }"><i class="material-icons">delete</i></button></div>
+        </div>
+      </div>
+      `;
+          screen.innerHTML += card;
+        }
+        if (screen.innerHTML === "") {
+          screen.innerHTML =
+            '<p class="flow-text">You have no meetings yet. <a onclick="openMeetimely()">Add a subject in Meetimely</a></p>';
+        }
+        document.getElementById("schedule-loader").style.display = "none";
+        initializeDelete();
+      }
+      function initializeDelete() {
+        document.querySelectorAll(".delete-button").forEach((button) => {
+          button.addEventListener("click", (e) => {
+            const name = button.getAttribute("data-subject-name");
+            document.getElementById(`card-${name}`).remove();
+            delete jsonData[name];
+            if (Object.keys(jsonData).length == 0) {
+              document.getElementById("schedule-cards").innerHTML =
+                "Huh you deleted everything lol";
+            }
+          });
+        });
+      }
+
+      /////Subject constructor
+      const todayMidnight = new Date();
+      todayMidnight.setHours(0, 0, 0);
+      function Subject(subject, name) {
+        this.times = subject.daysWithTimes;
+        this.name = name;
+        this.color = getAColor();
+        this.meetUrl = subject.meetUrl;
+        this.disabled = `disabled-${subject.disabled}`;
+        this.icon = subject.disabled ? "clear" : "check";
+        this.duration = subject.duration
+          ? `<span class="new badge blue" data-badge-caption="min">${subject.duration}</span>`
+          : "";
+        this.meetingCode = () => {
+          const url = new URL(this.meetUrl);
+          if (url.hostname == "meet.google.com")
+            return url.pathname.replace("/", "");
+          else return null;
+        };
+        /**
+         * @returns String
+         */
+        this.getAllTimes = () => {
+          let renderedDays = "";
+          this.times.forEach((time, day) => {
+            // day = day.toString();
+            if (time != null) {
+              renderedDays += `
+          <div class="day-chip-display">${day.dayFromIndex()} ${time.timeToString(
+                { short: true }
+              )}</div>
+          `;
+            }
+          });
+          return renderedDays;
+        };
+
+        /**
+         * Get the upcoming time to display
+         */
+        this.upcomingTime = (asString = true) => {
+          // same logic as in _createAlarm in background.js
+
+          /**
+           * Monday = 0
+           * Tuesday = 1 and so on
+           */
+          const today = todayMidnight.getDay() - 1;
+          let correction = today;
+          /**
+           * Loop from today till next week to set the next alarm.
+           */
+          for (
+            let index = today;
+            index <= this.times.length + correction - 1;
+            index++
+          ) {
+            const day = index % this.times.length; //to wrap around
+            // if (index < times.length + correction - 1) break;
+            if (this.times[day] != null) {
+              const daysTillFirstAlarm =
+                today <= day
+                  ? today === day && correction > today
+                    ? 7
+                    : day - today
+                  : 7 + day - today; // (7-today) + day
+              // if(correction > today) daysTillFirstAlarm = 7;
+              const minutesTillFirstAlarmDay = daysTillFirstAlarm * 1440;
+              const minutesAfterTodayMidnightTillFirstAlarm =
+                minutesTillFirstAlarmDay + this.times[day];
+              const minutesAfterNowTillFirstAlarm =
+                minutesAfterTodayMidnightTillFirstAlarm -
+                (Date.now() - todayMidnight.getTime()) / 60000;
+
+              // console.log("Alarm in ", minutesAfterNowTillFirstAlarm);
+
+              if (minutesAfterNowTillFirstAlarm <= 0 && correction === today) {
+                // Increment correction so that this loop reaches this day
+                // the next week
+                correction++;
+                continue;
+              }
+              console.log("Minutes ", minutesAfterNowTillFirstAlarm);
+              return asString
+                ? minutesAfterNowTillFirstAlarm.timeToString({
+                    fromMidnight: this.times[day],
+                  })
+                : minutesAfterNowTillFirstAlarm;
+            } else continue;
+          }
+        };
+      }
+      /**
+       * Get a random color
+       */
+      const getAColor = () =>
+        ["purple", "green", "yellow", "blue"][Math.floor(Math.random() * 4)];
+      Number.prototype.dayFromIndex = function () {
+        // !!Do not use arrow function
+        // otherwise "this" will refer to the
+        // global window object !!
+        //
+        // console.log(this[0]); //no idea
+        // when this was String.prototype... this[0]
+        // was to be used in switch (instead of `this`)
+        const num = +this; // convert to primitive
+        switch (num) {
+          case 0:
+            return "Mon";
+          case 1:
+            return "Tue";
+          case 2:
+            return "Wed";
+          case 3:
+            return "Thu";
+          case 4:
+            return "Fri";
+          case 5:
+            return "Sat";
+          default:
+            return "Day"; // uh oh
+        }
+      };
+      Number.prototype.fromMidnightToTime = function () {
+        const hours = Math.floor(+this / 60);
+        const x = hours >= 12 ? "PM" : "AM";
+        const minutes = Math.floor(+this % 60);
+        return `${hours % 12}:${minutes} ${x}`;
+      };
+      Number.prototype.timeToString = function ({
+        short = false,
+        fromMidnight = 0,
+      }) {
+        console.log("Time is ", +this);
+
+        const time = (Date.now() - todayMidnight.getTime()) / 60000 + +this;
+
+        if (time < 60) {
+          return short
+            ? `0:${Math.floor(this)}`
+            : `In ${Math.floor(this)} minutes`;
+        } else if (+this < 1440 || time < 1440) {
+          return short
+            ? `${Math.floor(+this / 60)}:${Math.floor(+this % 60)}`
+            : `In ${Math.floor(+this / 60)} hours ${Math.floor(
+                +this % 60
+              )} minutes`;
+        } else if (time < 2880) {
+          // const tom = time - 1440;
+          console.log(time);
+          return `Tomorrow at ${Math.floor(fromMidnight / 60)}:${Math.floor(
+            fromMidnight % 60
+          )}`;
+        } else {
+          // const daysTime = time % 1440;
+          return `In ${Math.floor(time / 1440)} days`;
+        }
+      };
+    </script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  </body>
+</html>

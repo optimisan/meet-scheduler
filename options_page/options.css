@@ -115,7 +115,7 @@ section#schedule {
 
 .input-field i.prefix {
   font-style: normal;
-  font-size: 18px !important;
+  /* font-size: 18px !important; */
   /* background: teal; */
   color: teal;
   height: auto;

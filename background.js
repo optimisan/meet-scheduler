@@ -165,11 +165,15 @@ function _createAlarm(times, subjectName) {
         correction++;
         continue;
       }
+      // Incorporate the "minutes ahead"
+      chrome.storage.sync.get("minutesAhead", (data) => {
+        const minAhead = Number(data.minutesAhead);
+        chrome.alarms.create(subjectName, {
+          delayInMinutes: minutesAfterNowTillFirstAlarm - minAhead,
+          // Don't periodInMinutes: 10080,
+        });
+      })
 
-      chrome.alarms.create(subjectName, {
-        delayInMinutes: minutesAfterNowTillFirstAlarm,
-        // Don't periodInMinutes: 10080,
-      });
       // chrome.alarms.create("alarm_name", {delayInMinutes: _minutes})
       break;
     } else continue;
@@ -242,6 +246,7 @@ chrome.runtime.onMessageExternal.addListener(
           delete d.autoJoin;
           delete d.showQuickMessage;
           delete d.autoEnd;
+          delete d.minutesAhead;
           sendResponse(d);
         })
       } else if (request.openOptions) {

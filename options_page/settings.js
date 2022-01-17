@@ -15,12 +15,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // set initial stored values
   setValues();
 
+  // Delete all
   document.getElementById("delete_all").addEventListener("click", async () => {
     chrome.storage.sync.clear();
     await chrome.alarms.clearAll();
     M.toast({ html: "Deleted all meetings", classes: "red" });
   });
-
+  //Save minutes ahead
+  let debouncedMinutesInput = debounce(saveMinAhead, 200);
+  document.getElementById("time-ahead").addEventListener("input", debouncedMinutesInput);
   // Save quick message
   var debouncedOnInput = debounce(saveQuickMessage, 500);
   document
@@ -46,6 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
       chrome.storage.sync.set({ showQuickMessage: e.target.checked });
     });
 });
+function saveMinAhead(e) {
+  const value = e.target.value;
+  chrome.storage.sync.set({ minutesAhead: Number(value) });
+}
 function saveQuickMessage(e) {
   const message = e.target.value;
   // localStorage.setItem("quickMessage", message);
@@ -71,7 +78,9 @@ function setValues() {
     document.getElementById("auto_join_meet").checked = localStorage.autoJoin; // == "true";
     document.getElementById("show_quick_message").checked =
       localStorage.showQuickMessage; //== "true";
+    document.getElementById("time-ahead").value = localStorage.minutesAhead;
     document.getElementById("quick_message").value =
       localStorage.quickMessage ?? "John Doe 2020WEDN12XX";
+    M.updateTextFields();
   });
 }
