@@ -57,6 +57,11 @@ if(isset($json[$username])){
         width: 600px;
         margin: 30px;
       }
+      h1:after {
+        content: "x Jeenius";
+        font-size: 18px;
+        position: relative;
+      }
     </style>
   </head>
   <body>
@@ -96,20 +101,6 @@ if(isset($json[$username])){
       Showing subjects saved by
       <kbd class="teal-text"><?php echo $username;?></kbd>
     </p>
-    <?php
-    } else {
-    ?>
-    <div class="red-text">
-      The shared content seems to have been deleted, or never existed in the
-      first place.
-    </div>
-    <p>
-      You might want to check the link again, or
-      <a href="/meetimely"> share your meetings</a>
-    </p>
-    <?php
-    }
-    ?>
     <div class="center-align" id="init">
       <div class="loader-wrapper" id="schedule-loader">
         <div class="preloader-wrapper big active">
@@ -163,6 +154,20 @@ if(isset($json[$username])){
         </div>
       </div>
     </div>
+    <?php
+    } else {
+    ?>
+    <div class="red-text">
+      The shared content seems to have been deleted, or never existed in the
+      first place.
+    </div>
+    <p>
+      You might want to check the link again, or
+      <a href="/meetimely"> share your meetings</a>
+    </p>
+    <?php
+    }
+    ?>
     <div id="schedule-cards"></div>
     <div id="message" class="center-align"></div>
     <div class="modal" id="share-modal">
@@ -175,7 +180,7 @@ if(isset($json[$username])){
       // const id = "aenhmmfelkmdlihmaiblnhdmfopmbonc";
       const id = "jdefgnfbjheccflilfkbjmieohkpjcfi";
       let meetimelyIsInstalled = false;
-      let data = "<?php echo $data; ?>";
+      let data = `<?php echo $data; ?>`;
       const jsonData = JSON.parse(data);
       let username = localStorage.usernameMEET;
       function saveSubjects() {

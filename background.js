@@ -50,6 +50,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     // console.log(subject[alarm.name]);
     if (subject[alarm.name]) {
       // Open the meeting
+      console.log("opened " + subject[alarm.name].meetUrl);
       const tab = await chrome.tabs.create({
         url: subject[alarm.name].meetUrl,
       });
@@ -102,82 +103,85 @@ chrome.alarms.onAlarm.addListener((alarm) => {
  * @param {String} subjectName The subject for which alarm is to be created
  */
 function _createAlarm(times, subjectName) {
-  /**
-   * The most recent (past) midnight (today's midnight)
-   */
-  const todayMidnight = new Date();
-  todayMidnight.setHours(0, 0, 0);
-  /**
-   * Monday = 0
-   * Tuesday = 1 and so on
-   */
-  const today = todayMidnight.getDay() - 1;
-  // The idea is that we set an alarm for the immediate
-  // next meeting time available and then set the next alarm when
-  // this alarm goes off, instead of having a `periodInMinutes` of 1 week
-  //
-  // This means that _createAlarm is called in two situations:
-  // 1) Initial subject is created
-  // 2) An alarm goes off
-  //
-  // We loop over the `times` array, starting from _today's_ index
-  // and wrap over till "yesterday" of next week (Ex. Mon to Sun /or/ Thu to Wed)
-  //
-  // Problem is that we must look at times after the current time
-  // If it is Mon, 5pm right now and a meting time is on Mon 4pm
-  // we should set the alarm for the next week's Mon
+  chrome.storage.sync.get("minutesAhead", (data) => {
+    const minAhead = Number(data.minutesAhead ?? 0);
+    // times.forEach((t, i) => times[i] = (t - minAhead) <= 0 ? null : t - minAhead);
+    // console.log("times", times);
+    /**
+     * The most recent (past) midnight (today's midnight)
+     */
+    const todayMidnight = new Date();
+    todayMidnight.setHours(0, 0, 0);
+    /**
+     * Monday = 0
+     * Tuesday = 1 and so on
+     */
+    const today = todayMidnight.getDay() - 1;
+    // The idea is that we set an alarm for the immediate
+    // next meeting time available and then set the next alarm when
+    // this alarm goes off, instead of having a `periodInMinutes` of 1 week
+    //
+    // This means that _createAlarm is called in two situations:
+    // 1) Initial subject is created
+    // 2) An alarm goes off
+    //
+    // We loop over the `times` array, starting from _today's_ index
+    // and wrap over till "yesterday" of next week (Ex. Mon to Sun /or/ Thu to Wed)
+    //
+    // Problem is that we must look at times after the current time
+    // If it is Mon, 5pm right now and a meting time is on Mon 4pm
+    // we should set the alarm for the next week's Mon
 
-  /**
-   * Ends the loop at the 'yesterday' of next week.
-   *
-   * If we encouter a time in today which is in the past
-   * this `correction` is incremented so that the alarm
-   * is created on the 'today' of next week
-   * (loop will end after exactly one week).
-   */
-  let correction = today;
-  /**
-   * Loop from today till next week to set the next alarm.
-   */
-  for (let index = today; index <= times.length + correction - 1; index++) {
-    const day = index % times.length; //to wrap around
-    console.log("Day: ", day);
-    // if (index < times.length + correction - 1) break;
-    if (times[day] != null) {
-      const daysTillFirstAlarm =
-        today <= day
-          ? today === day && correction > today
-            ? 7
-            : day - today
-          : 7 + day - today; // (7-today) + day
-      // if(correction > today) daysTillFirstAlarm = 7;
-      const minutesTillFirstAlarmDay = daysTillFirstAlarm * 1440;
-      const minutesAfterTodayMidnightTillFirstAlarm =
-        minutesTillFirstAlarmDay + times[day];
-      const minutesAfterNowTillFirstAlarm =
-        minutesAfterTodayMidnightTillFirstAlarm -
-        (Date.now() - todayMidnight.getTime()) / 60000;
+    /**
+     * Ends the loop at the 'yesterday' of next week.
+     *
+     * If we encouter a time in today which is in the past
+     * this `correction` is incremented so that the alarm
+     * is created on the 'today' of next week
+     * (loop will end after exactly one week).
+     */
+    let correction = today;
+    /**
+     * Loop from today till next week to set the next alarm.
+     */
+    for (let index = today; index <= times.length + correction - 1; index++) {
+      const day = index % times.length; //to wrap around
+      console.log("Day: ", day);
+      // if (index < times.length + correction - 1) break;
+      if (times[day] != null) {
+        const daysTillFirstAlarm =
+          today <= day
+            ? today === day && correction > today
+              ? 7
+              : day - today
+            : 7 + day - today; // (7-today) + day
+        // if(correction > today) daysTillFirstAlarm = 7;
+        const minutesTillFirstAlarmDay = daysTillFirstAlarm * 1440;
+        const minutesAfterTodayMidnightTillFirstAlarm =
+          minutesTillFirstAlarmDay + times[day] - minAhead;
+        const minutesAfterNowTillFirstAlarm =
+          minutesAfterTodayMidnightTillFirstAlarm -
+          (Date.now() - todayMidnight.getTime()) / 60000;
 
-      console.log("Alarm", subjectName, " in ", minutesAfterNowTillFirstAlarm);
-      if (minutesAfterNowTillFirstAlarm <= 0 && correction === today) {
-        // Increment correction so that this loop reaches this day
-        // the next week
-        correction++;
-        continue;
-      }
-      // Incorporate the "minutes ahead"
-      chrome.storage.sync.get("minutesAhead", (data) => {
-        const minAhead = Number(data.minutesAhead);
+        console.log("Alarm", subjectName, " in ", minutesAfterNowTillFirstAlarm);
+        if (minutesAfterNowTillFirstAlarm <= 0 && correction === today) {
+          // Increment correction so that this loop reaches this day
+          // the next week
+          correction++;
+          continue;
+        }
+        // Incorporate the "minutes ahead"
+        // const minAhead = Number(data.minutesAhead);
         chrome.alarms.create(subjectName, {
-          delayInMinutes: minutesAfterNowTillFirstAlarm - minAhead,
+          delayInMinutes: minutesAfterNowTillFirstAlarm,
           // Don't periodInMinutes: 10080,
         });
-      })
 
-      // chrome.alarms.create("alarm_name", {delayInMinutes: _minutes})
-      break;
-    } else continue;
-  }
+        // chrome.alarms.create("alarm_name", {delayInMinutes: _minutes})
+        break;
+      } else continue;
+    }
+  })
 }
 // listen for end Call Alarm
 chrome.alarms.onAlarm.addListener((alarm) => {

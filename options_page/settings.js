@@ -51,7 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 function saveMinAhead(e) {
   const value = e.target.value;
-  chrome.storage.sync.set({ minutesAhead: Number(value) });
+  let asNum = Number(value);
+  console.log("asNum", asNum)
+  if (asNum < 0)
+    asNum = 0;
+  chrome.storage.sync.set({ minutesAhead: asNum });
 }
 function saveQuickMessage(e) {
   const message = e.target.value;

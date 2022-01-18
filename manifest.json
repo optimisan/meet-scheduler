@@ -1,6 +1,6 @@
 {
   "name": "Meet Scheduler",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An extension to start meetings automatically",
   "manifest_version": 3,
   "icons": { "48": "icon48.png" },

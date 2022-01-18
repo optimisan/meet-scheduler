@@ -134,6 +134,31 @@
         <p>You can share the link given below:</p>
         <code id="link">link is here</code>
       </div>
+      <div class="modal-footer">
+        <button onclick="copyLink()" class="waves-effect waves-green btn-flat">
+          Copy
+        </button>
+        <a href="" id="link-a" class="waves-effect btn-flat">Open</a>
+      </div>
+    </div>
+    <div class="modal" id="info-modal">
+      <div class="modal-content">
+        <h4>Save meetings online</h4>
+        <p>
+          Clicking the save button will save all your subjects online and will
+          generate a link using the name you provide.
+        </p>
+        <p>
+          You can share this link with others so they can import your subjects.
+        </p>
+        <p>
+          Click the Delete <i class="material-icons">delete</i> icon to remove a
+          subject
+        </p>
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-close btn btn-flat">Awesome!</a>
+      </div>
     </div>
     <script>
       // const id = "aenhmmfelkmdlihmaiblnhdmfopmbonc";
@@ -165,6 +190,7 @@
             var text = xhr.responseText;
             if (text !== "failed") {
               document.getElementById("link").innerText = text;
+              document.getElementById("link-a").setAttribute("href", text);
               M.Modal.getInstance(
                 document.getElementById("share-modal")
               ).open();
@@ -183,10 +209,12 @@
           M.toast({ html: "Failed to save" });
         }
       }
+      let openedOnce = false;
       function openMeetimely() {
         try {
           chrome.runtime.sendMessage(id, { openOptions: true }, (res) => {
-            if (chrome.runtime.lastError) {
+            if (chrome.runtime.lastError && !openedOnce) {
+              openedOnce = true;
               window.open(
                 "https://chrome.google.com/webstore/detail/meet-scheduler/aenhmmfelkmdlihmaiblnhdmfopmbonc?hl=en-GB",
                 "_blank"
@@ -194,14 +222,18 @@
             }
           });
         } catch (e) {
-          window.open(
-            "https://chrome.google.com/webstore/detail/meet-scheduler/aenhmmfelkmdlihmaiblnhdmfopmbonc?hl=en-GB",
-            "_blank"
-          );
+          if (!openedOnce) {
+            openedOnce = true;
+            window.open(
+              "https://chrome.google.com/webstore/detail/meet-scheduler/aenhmmfelkmdlihmaiblnhdmfopmbonc?hl=en-GB",
+              "_blank"
+            );
+          }
         }
       }
       document.addEventListener("DOMContentLoaded", (e) => {
         M.Modal.init(document.querySelectorAll(".modal"));
+        M.Modal.getInstance(document.getElementById("info-modal")).open();
         try {
           chrome.runtime.sendMessage(id, { fromShare: true }, (res) => {
             if (chrome.runtime.lastError) {
@@ -457,7 +489,6 @@
               )} minutes`;
         } else if (time < 2880) {
           // const tom = time - 1440;
-          console.log(time);
           return `Tomorrow at ${Math.floor(fromMidnight / 60)}:${Math.floor(
             fromMidnight % 60
           )}`;
@@ -466,6 +497,19 @@
           return `In ${Math.floor(time / 1440)} days`;
         }
       };
+
+      function copyLink() {
+        navigator.clipboard
+          .writeText(document.getElementById("link").innerText)
+          .then(
+            function () {
+              M.toast({ html: "Copied to clipboard", classes: "green" });
+            },
+            function (err) {
+              M.toast({ html: "Failed to copy to clipboard", classes: "red" });
+            }
+          );
+      }
     </script>
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>

@@ -327,3 +327,20 @@ pre {
   color: #116969;
   padding: 8px 16px;
 }
+section#about i {
+  transform: translateY(3px);
+  margin-right: 5px;
+}
+section#about code {
+  border-radius: 5px;
+  padding: 0px 9px;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+section#about a.tab {
+  background-color: #d6e7e4;
+  color: #116969;
+  border-radius: 5px;
+  padding: 5px 9px;
+  margin-bottom: 5px;
+}
