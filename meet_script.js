@@ -9,21 +9,35 @@ if (location.pathname !== "/") {
 // to load completely but lemme use this for now
 
 console.log(location.toString());
-
+let meetingName;
 setTimeout(() => {
   chrome.storage.sync.get(null, (s) => {
+    findJoinButton();
     let executeScript = false;
+    // let meetName;
     for (const subjectName in s) {
       console.log(s[subjectName]);
       if (window.location.href.includes(s[subjectName].meetUrl)) {
         executeScript = true;
+        meetingName = subjectName;
         break;
       }
     }
     if (!executeScript) return;
     executeJoin(s.autoJoin, s.showQuickMessage);
+    displayMeetingName();
   });
 }, 5000);
+
+function showNameOnJoinScreen() {
+  console.log("showing name");
+  document.querySelectorAll('div[jsaction^="mouseover"]').forEach(div => {
+    if (/join\b/.test(div.innerText)) {
+      div.insertAdjacentHTML("afterend", `<div style="color:teal">${meetingName}</div>`);
+      // div.style.color = "red";
+    }
+  })
+}
 
 function executeJoin(autoJoin, showQuickMessage) {
   // Join the meet
@@ -43,11 +57,13 @@ function executeJoin(autoJoin, showQuickMessage) {
       } catch (e) {
         console.log(e);
         _showError("Could not turn off microphone and camera and join");
-        try {
-          prepareToJoin();
-        } catch (e) {
-          console.log(e);
-        }
+        setTimeout(() => {
+          try {
+            prepareToJoin();
+          } catch (e) {
+            console.log(e);
+          }
+        }, 1500);
       }
     }, 2000);
   }
@@ -64,6 +80,7 @@ function _showError(message) {
  * Turn off microphone and camera
  */
 function prepareToJoin() {
+  showNameOnJoinScreen();
   try {
     document.querySelector('div[aria-label^="Turn off microphone ("]').click();
     document.querySelector('div[aria-label^="Turn off camera ("]').click();
@@ -80,17 +97,32 @@ function prepareToJoin() {
     ).click();
   }
 }
-function joinMeeting() {
+let joinButton;
+function findJoinButton() {
   document.querySelectorAll("div[role='button']").forEach((button) => {
     // console.log(button);
     const span = button.querySelector(" span span");
     // console.log(span.innerHTML);
     const regex = /(ask to join)|(join now)/gi;
     if (regex.test(span.innerHTML)) {
-      button.click();
-      button.style.background = "red";
+      joinButton = button;
+      return button;
     }
   });
+}
+function joinMeeting() {
+  joinButton.click();
+  // document.querySelectorAll("div[role='button']").forEach((button) => {
+  //   // console.log(button);
+  //   const span = button.querySelector(" span span");
+  //   // console.log(span.innerHTML);
+  //   const regex = /(ask to join)|(join now)/gi;
+  //   if (regex.test(span.innerHTML)) {
+  //     joinButton = button;
+  //     button.click();
+  //     button.style.background = "red";
+  //   }
+  // });
 }
 function addButton(showQuickMessage) {
   if (showQuickMessage)
@@ -164,7 +196,42 @@ function endMeeting() {
     console.log(e);
   }
 }
-
+// Replace link code with meeting name
+function displayMeetingName() {
+  //joinButton?
+  if (!nameWasInserted)
+    document.addEventListener("click", () => {
+      findDivAndInsertName(meetingName);
+    });
+  // findJoinButton().addEventListener("click", (e) => {
+  //   console.log("event listener");
+  //   setTimeout(() => {
+  //     if (!findDivAndInsertName()) {
+  //       setTimeout(() => {
+  //         findDivAndInsertName();
+  //       }, 2000);
+  //     }
+  //   }, 5000);
+  // })
+}
+let nameWasInserted = false;
+/**
+ * Finds the code link div(bottom left) and replaces 
+ * the link with provided subject name
+ * @param {String} n Meeting name
+ * @returns whether it was successful
+ */
+function findDivAndInsertName(n) {
+  if (nameWasInserted) return;
+  document.querySelectorAll('div[jsaction^="mouseover"]').forEach(div => {
+    if (/\w{3}-\w{4}-\w{3}/.test(div.innerText)) {
+      div.innerText = n;
+      nameWasInserted = true;
+      return true;
+    }
+  })
+  return false;
+}
 //draggable button
 // window.onload = addListeners;
 // window.onload = addListeners;
