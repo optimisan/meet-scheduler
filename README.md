@@ -1,5 +1,7 @@
 # Meetimely
 
+![Chrome Web Store](https://img.shields.io/chrome-web-store/users/aenhmmfelkmdlihmaiblnhdmfopmbonc?color=%2310c77e&label=current%20users)
+
 An extension to open meet URLs(or any links) at scheduled times
 
 ## Installing
