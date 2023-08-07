@@ -4,6 +4,8 @@
 
 An extension to open meet URLs(or any links) at scheduled times
 
+**\*Has the Featured label on Chrome Web Store!**
+
 ## Installing
 
 Install it from [Chrome Web Store](https://chrome.google.com/webstore/detail/meetimely/aenhmmfelkmdlihmaiblnhdmfopmbonc?hl=en-GB&authuser=0)
